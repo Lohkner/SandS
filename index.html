@@ -3,183 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S&S: CRÓNICAS ANTIGUAS</title>
+    <meta name="theme-color" content="#f3e5ce">
+    <title>Stars & Sorcery: Character Sheet</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
 
     <style>
-        /* === 1. VARIABLES === */
+        /* === 1. SISTEMA DE DISEÑO === */
         :root {
-            --bg-paper: #f3e5ce; --ink-main: #1a1a1a; --ink-red: #8b0000; --ink-accent: #4a3b2a;
-            --font-title: 'IM Fell English SC', serif; --font-body: 'Crimson Text', serif; --font-mono: 'Courier Prime', monospace;
+            --bg-paper: #f3e5ce;
+            --bg-light: #fffef8;
+            --ink-main: #1a1a1a;
+            --ink-red: #8b0000;
+            --ink-accent: #4a3b2a;
+            --shadow-soft: 4px 4px 0px rgba(74, 59, 42, 0.15);
+            --border-thick: 2px solid var(--ink-main);
+            
+            --font-title: 'IM Fell English SC', serif;
+            --font-body: 'Crimson Text', serif;
+            --font-mono: 'Courier Prime', monospace;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: var(--font-body); background-color: var(--bg-paper); color: var(--ink-main);
-            padding: 25px; background-image: radial-gradient(#d6c6a8 1px, transparent 1px); background-size: 20px 20px;
-            font-size: 16px; line-height: 1.5;
+            font-family: var(--font-body);
+            background-color: var(--bg-paper);
+            color: var(--ink-main);
+            padding: 20px;
+            /* Textura de papel sutil + Ruido */
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"), radial-gradient(#d6c6a8 1px, transparent 1px);
+            background-size: 150px 150px, 20px 20px;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
+        /* === 2. TIPOGRAFÍA === */
         .main-title {
-            font-family: var(--font-title); color: var(--ink-red); font-size: 4em; text-align: center;
-            margin: 0 auto 30px auto; max-width: 900px; border-bottom: 4px double var(--ink-red);
-            letter-spacing: 2px; line-height: 1; padding-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-family: var(--font-title); color: var(--ink-red); font-size: 3.5rem; text-align: center;
+            margin: 0 auto 30px auto; max-width: 900px; border-bottom: 3px double var(--ink-red);
+            letter-spacing: 2px; line-height: 1; padding-bottom: 15px; 
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
         }
 
-        .container { max-width: 1100px; margin: auto; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
-
-        /* === 2. TIPOGRAFÍA Y ESTILOS === */
-        h1, h2, h3 { font-family: var(--font-title); font-weight: normal; color: var(--ink-main); }
-        h2 { color: var(--ink-red); font-size: 1.6em; border-bottom: 1px solid var(--ink-accent); margin-top: 0; padding-bottom: 5px; }
-        h3 { font-size: 1.15em; text-decoration: underline; margin-bottom: 8px; color: var(--ink-accent); }
-
-        .section {
-            background: #fffef8; border: 2px solid var(--ink-main); padding: 20px; margin-bottom: 25px;
-            box-shadow: 5px 5px 0px rgba(0,0,0,0.1); position: relative;
+        h1, h2, h3 { font-family: var(--font-title); font-weight: 400; color: var(--ink-main); margin: 0; }
+        
+        h2 { 
+            color: var(--ink-red); font-size: 1.6em; border-bottom: 1px solid var(--ink-accent); 
+            padding-bottom: 5px; margin-bottom: 15px; letter-spacing: 0.5px;
         }
         
+        h3 { 
+            font-size: 1.1em; text-decoration: underline; text-decoration-color: var(--ink-accent); 
+            text-underline-offset: 3px; margin-bottom: 8px; color: var(--ink-accent);
+        }
+
+        /* === 3. ESTRUCTURA === */
+        .container { max-width: 1150px; margin: auto; display: grid; grid-template-columns: 320px 1fr; gap: 30px; align-items: start; }
+
+        .section, .sidebar {
+            background: var(--bg-light); border: var(--border-thick);
+            padding: 20px; margin-bottom: 25px; 
+            box-shadow: var(--shadow-soft); position: relative;
+        }
+
         .section::before {
             content: "❖"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-            background: #fffef8; padding: 0 10px; font-size: 1.2em; color: var(--ink-accent);
+            background: var(--bg-light); padding: 0 10px; font-size: 1.2em; color: var(--ink-accent);
         }
 
-        /* === 3. BARRA LATERAL (SOLUCIÓN SCROLL INVISIBLE) === */
-        .sidebar { 
-            background: #fffef8; 
-            border: 2px solid var(--ink-main); 
-            padding: 15px; 
-            box-shadow: 5px 5px 0px rgba(0,0,0,0.1); 
+        /* Sidebar Sticky con Scroll Invisible */
+        .sidebar {
+            padding: 20px; 
             position: sticky; 
             top: 20px; 
-            max-height: calc(100vh - 40px); 
-            overflow-y: auto; 
-            scrollbar-width: none; 
-            -ms-overflow-style: none;  
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            overflow-x: hidden; /* Prohíbe scroll horizontal */
+            
+            /* Ocultar Barras */
+            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
         }
-        .sidebar::-webkit-scrollbar { display: none; }
+        
+        .sidebar::-webkit-scrollbar { display: none; /* Chrome, Safari, Opera */ }
 
-        /* === 4. FORMULARIOS === */
-        label { font-family: var(--font-title); color: var(--ink-accent); font-size: 1.1em; display: block; margin-top: 10px; }
+        /* === 4. RETRATO === */
+        .portrait-frame {
+            /* 320px (sidebar) - 40px (padding total) - 4px (bordes) = 276px disponible. */
+            width: 276px; 
+            height: 380px; 
+            margin: 0 auto 20px auto;
+            border: 4px double var(--ink-main); 
+            border-radius: 2px;
+            overflow: hidden; background: #e8dcc5; cursor: pointer;
+            position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            transition: border-color 0.2s;
+        }
+        .portrait-frame:hover { border-color: var(--ink-red); }
+        .portrait-frame img { width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(0.2); }
+        .portrait-label {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(26, 26, 26, 0.85); color: #f3e5ce;
+            font-size: 0.75em; text-align: center; padding: 6px;
+            font-family: var(--font-mono); letter-spacing: 1px;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+            text-transform: uppercase;
+        }
+        .portrait-frame:hover .portrait-label { opacity: 1; }
+
+        /* === 5. FORMULARIOS E INPUTS === */
+        label { font-family: var(--font-title); color: var(--ink-accent); font-size: 1.1em; display: block; margin-top: 12px; }
         
         input[type="text"], input[type="number"], select, textarea {
-            background: transparent; border: none; border-bottom: 2px dashed #888;
+            background: transparent; border: none; 
+            border-bottom: 2px dashed #999;
             font-family: var(--font-mono); font-weight: 700; color: var(--ink-main);
-            padding: 4px 0; width: 100%; font-size: 1.1em; transition: 0.2s;
+            padding: 6px 0; width: 100%; font-size: 1.1em; transition: 0.2s;
+            border-radius: 0;
         }
         
         textarea { 
-            resize: none; min-height: 6em; height: auto; overflow-y: hidden;
+            resize: none; min-height: 6em; overflow: hidden;
             font-size: 0.95em; color: #444; font-style: italic; line-height: 1.4;
-            margin-top: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.3); padding: 8px;
+            margin-top: 8px; border: 1px solid rgba(0,0,0,0.1); 
+            background: rgba(255,255,255,0.4); padding: 8px;
         }
 
-        input:focus, select:focus, textarea:focus { outline: none; border-bottom: 2px solid var(--ink-red); background: rgba(139, 0, 0, 0.05); }
+        input:focus, select:focus, textarea:focus { outline: none; border-bottom: 2px solid var(--ink-red); background: rgba(139, 0, 0, 0.03); }
         input[type="number"] { text-align: center; font-size: 1.4em; }
 
-        /* === 5. UI ELEMENTS & GRIDS === */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        /* GRID DE ATRIBUTOS CORREGIDO */
-        .stats-grid, .stats-output-grid { 
-            display: grid; 
-            grid-template-columns: repeat(6, 1fr); 
-            gap: 10px; 
+        input[type="radio"], input[type="checkbox"] {
+            appearance: none; width: 16px; height: 16px; 
+            border: 2px solid var(--ink-main); cursor: pointer; 
+            display: inline-block; vertical-align: middle; margin-right: 6px; 
+            position: relative; top: -2px; background: #fff;
         }
+        input[type="radio"] { border-radius: 50%; }
+        input[type="radio"]:checked, input[type="checkbox"]:checked {
+            background-color: var(--ink-red); border-color: var(--ink-red);
+            box-shadow: inset 0 0 0 3px #fff;
+        }
+
+        /* === 6. GRIDS & LAYOUTS === */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .stats-grid, .stats-output-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
         
         .stat-box, .stat-box-dark {
-            text-align: center; font-family: var(--font-mono); font-size: 0.95em;
-            padding: 5px;
+            text-align: center; font-family: var(--font-mono); font-size: 1em; padding: 8px 2px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        .stat-box { border: 1px solid #ccc; background: #fdfdfd; }
+        .stat-box { border: 1px solid #ccc; background: #fff; }
         .stat-box-dark { color: #fff; }
 
-        @media (max-width: 800px) {
-            .stats-grid, .stats-output-grid { grid-template-columns: repeat(3, 1fr); }
-            .container { grid-template-columns: 1fr; } 
-            .sidebar { position: relative; top: 0; max-height: none; overflow: visible; }
+        .skill-area { 
+            border: 1px solid #ccc; padding: 10px; background: #fff; 
+            max-height: 220px; overflow-y: auto; scrollbar-width: none;
         }
+        .skill-opt { cursor: pointer; display: block; margin-bottom: 5px; font-size: 0.95em; }
+        .skill-opt:hover { background-color: #f0f0f0; }
 
-        .skill-area { border: 1px solid #ccc; padding: 8px; background: #fdfdfd; max-height: 200px; overflow-y: auto; }
-        .skill-opt { cursor: pointer; display: block; margin-bottom: 4px; font-size: 0.95em; }
-        .skill-opt:hover { background-color: #eee; }
+        /* === 7. RESULTADOS LATERALES === */
+        .big-stat { 
+            border: 4px double var(--ink-main); text-align: center; 
+            padding: 15px; margin-bottom: 20px; 
+            border-radius: 50% 50% 0 0; background: #fff; 
+        }
+        .big-stat h3 { font-size: 3.8em; color: var(--ink-red); line-height: 0.9; margin-bottom: 5px; }
         
-        .big-stat { border: 4px double var(--ink-main); text-align: center; padding: 10px; margin-bottom: 15px; border-radius: 50% 50% 0 0; background: #fff; }
-        .big-stat h3 { margin: 0; font-size: 3.5em; color: var(--ink-red); line-height: 1; }
-        .stat-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding: 6px 0; font-size: 1.05em; }
-        .stat-val { font-family: var(--font-mono); font-weight: 700; font-size: 1.2em; }
-
-        /* --- RETRATO MAXIMIZADO --- */
-        .portrait-frame {
-            width: 270px; /* Ancho máximo disponible (300 - 15 - 15) */
-            height: 380px; /* Altura incrementada */
-            margin: 0 auto 20px auto;
-            border: 4px double var(--ink-main); border-radius: 2px;
-            overflow: hidden; background: #e8dcc5; cursor: pointer;
-            position: relative; box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
-            transition: transform 0.2s;
+        .stat-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid #ccc; padding: 8px 0; font-size: 1.1em; 
         }
-        .portrait-frame:hover { transform: translateY(-2px); border-color: var(--ink-red); }
-        .portrait-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .portrait-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(26, 26, 26, 0.8); color: #f3e5ce; font-size: 0.8em; text-align: center; padding: 6px; font-family: var(--font-mono); letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
-        .portrait-frame:hover .portrait-label { opacity: 1; }
+        .stat-val { font-family: var(--font-mono); font-weight: 700; font-size: 1.25em; }
 
-        /* === 6. BOTONES === */
-        .action-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .btn { background: #fff; border: 2px solid var(--ink-main); color: var(--ink-main); font-family: var(--font-title); font-size: 1.1em; padding: 8px; width: 100%; cursor: pointer; box-shadow: 3px 3px 0px var(--ink-main); transition: all 0.1s; letter-spacing: 0.5px; }
+        /* === 8. BOTONES OPTIMIZADOS === */
+        .action-bar { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+            gap: 12px; /* Espacio entre botones */
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        /* Estilo Base para TODOS los botones */
+        .btn {
+            font-family: var(--font-title); 
+            font-size: 1.1em; 
+            padding: 10px 0; /* Padding vertical uniforme */
+            width: 100%; 
+            cursor: pointer; 
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.15s ease;
+            box-sizing: border-box; /* Vital para que no se recorten */
+            
+            /* Estilo por defecto (Blanco) */
+            background: #fff; 
+            border: 2px solid var(--ink-main); 
+            color: var(--ink-main);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.15);
+        }
+
+        /* Botón que ocupa todo el ancho */
         .btn-full { grid-column: span 2; } 
-        .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--ink-main); }
-        .btn:hover { background: var(--ink-red); color: #fff; border-color: var(--ink-red); }
-        .btn-clear { background: #f0f0f0; border: 1px dashed var(--ink-main); font-size: 0.9em; margin-bottom: 20px; box-shadow: none; padding: 5px; }
-        .btn-mini { padding: 3px 8px; margin-left: 5px; cursor: pointer; border: 1px solid var(--ink-main); font-family: var(--font-mono); font-size: 0.8em; }
+
+        /* Interacciones */
+        .btn:active { 
+            transform: translate(2px, 2px); 
+            box-shadow: 1px 1px 0px rgba(0,0,0,0.15); 
+        }
+        .btn:hover { 
+            background: var(--ink-red); 
+            color: #fff; 
+            border-color: var(--ink-red); 
+        }
+        
+        /* Estilo Específico para LIMPIAR (Mismo tamaño, diferente color) */
+        .btn-clear { 
+            background: #f4f4f4; 
+            border: 2px dashed var(--ink-main); 
+            color: var(--ink-main);
+            box-shadow: none;
+        }
+        .btn-clear:hover { 
+            background: var(--ink-main); 
+            color: #fff; 
+            border-color: var(--ink-main); 
+        }
+
+        /* Botones pequeños (Modal y secciones) */
+        .btn-confirm { 
+            background: var(--ink-main); color: #fff; border: none; padding: 12px; 
+            width: 100%; cursor: pointer; font-family: var(--font-title); 
+            font-size: 1.2em; margin-top: 15px; letter-spacing: 1px;
+        }
+        .btn-confirm:hover { background: var(--ink-accent); }
+        
+        .btn-edit { 
+            font-size: 0.8em; padding: 6px 15px; background: transparent; 
+            border: 1px solid var(--ink-main); cursor: pointer; display: block; 
+            margin: 15px auto 0 auto; font-family: var(--font-mono); 
+            text-transform: uppercase; transition: 0.2s;
+        }
+        .btn-edit:hover { background: var(--ink-main); color: #fff; }
+        .btn-mini { padding: 4px 10px; margin-left: 5px; cursor: pointer; border: 1px solid var(--ink-main); font-family: var(--font-mono); font-size: 0.8em; }
         .btn-load { background: var(--ink-main); color: #fff; }
         .btn-del { background: transparent; color: var(--ink-red); border-color: var(--ink-red); }
 
-        .btn-confirm { background: var(--ink-main); color: #fff; border: none; padding: 8px; width: 100%; cursor: pointer; font-family: var(--font-title); font-size: 1.1em; margin-top: 10px; letter-spacing: 1px; }
-        .btn-confirm:hover { background: var(--ink-accent); }
-
-        .btn-edit { font-size: 0.85em; padding: 5px 12px; background: transparent; border: 1px solid var(--ink-main); cursor: pointer; display: block; margin: 10px auto 0 auto; font-family: var(--font-mono); color: var(--ink-main); text-transform: uppercase; }
-        .btn-edit:hover { background: var(--ink-main); color: #fff; }
-
-        /* === 7. RESÚMENES === */
-        .summary-view { border: 1px solid var(--ink-accent); background: #fffdf5; padding: 12px; box-shadow: inset 0 0 8px rgba(0,0,0,0.05); margin-top: 10px; }
-        .summary-text { font-family: var(--font-mono); font-size: 1em; text-align: center; color: var(--ink-main); font-weight: bold; }
-        
-        .bonus-desc { font-family: var(--font-body); font-style: italic; color: #666; font-size: 0.95em; margin-top: 5px; line-height: 1.2; }
+        /* === 9. PANELES DE RESUMEN === */
+        .summary-view { 
+            border: 1px solid var(--ink-accent); background: #fffdf5; 
+            padding: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); margin-top: 15px;
+        }
+        .summary-text { font-family: var(--font-mono); font-size: 1em; text-align: center; color: var(--ink-main); font-weight: 700; }
         
         #stats_final_display { 
-            background: var(--ink-main); color: #fff; padding: 10px; margin-top: 20px; 
-            border: 2px solid var(--ink-main); box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+            background: var(--ink-main); color: #fff; padding: 15px; margin-top: 20px; 
+            border: 2px solid var(--ink-main); box-shadow: var(--shadow-soft);
         }
-        
-        #weapon_info { font-size: 1.2em; font-family: var(--font-mono); margin: 5px 0 0 0; color: var(--ink-main); font-weight: 700; }
+        #weapon_info { font-size: 1.3em; font-family: var(--font-mono); margin: 5px 0 0 0; color: var(--ink-main); font-weight: 700; }
 
-        input[type="radio"], input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 2px solid var(--ink-main); cursor: pointer; display: inline-block; vertical-align: middle; margin-right: 5px; }
-        input[type="radio"] { border-radius: 50%; }
-        input[type="radio"]:checked, input[type="checkbox"]:checked { background-color: var(--ink-red); border-color: var(--ink-red); box-shadow: inset 0 0 0 3px var(--bg-paper); }
-
-        /* === 8. MODALES === */
-        dialog.modal-osr { background: var(--bg-paper); color: var(--ink-main); border: 4px double var(--ink-main); width: 95%; max-width: 480px; padding: 0; }
+        /* === 10. MODALES (Dialogs) === */
+        dialog.modal-osr { 
+            background: var(--bg-paper); color: var(--ink-main); 
+            border: 4px double var(--ink-main); width: 95%; max-width: 500px; padding: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
         dialog::backdrop { background: rgba(26, 26, 26, 0.9); backdrop-filter: blur(4px); }
-        .modal-header { background: var(--ink-main); color: #fff; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 15px; max-height: 70vh; overflow-y: auto; }
-        .char-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--ink-main); padding: 10px 0; }
+        .modal-header { 
+            background: var(--ink-main); color: #fff; padding: 15px 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; scrollbar-width: none; }
+        .char-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--ink-main); padding: 12px 0; }
 
-        /* === 9. EDITOR DE IMAGEN (Ancho actualizado) === */
+        /* === 11. EDITOR DE CROP === */
         .crop-container {
-            width: 270px; height: 380px; margin: 20px auto; /* Coincide con portrait-frame */
-            border: 2px dashed var(--ink-accent);
-            position: relative; overflow: hidden;
-            background: #000; touch-action: none;
+            width: 276px; height: 380px; margin: 20px auto; 
+            border: 2px dashed var(--ink-accent); position: relative; overflow: hidden;
+            background: #111; touch-action: none;
         }
         .crop-image { position: absolute; top: 0; left: 0; transform-origin: top left; cursor: grab; }
         .crop-image:active { cursor: grabbing; }
-        .crop-controls { text-align: center; margin-bottom: 15px; }
-        .zoom-slider { width: 80%; accent-color: var(--ink-red); }
+        .crop-controls { text-align: center; margin-bottom: 20px; }
+        .zoom-slider { width: 80%; accent-color: var(--ink-red); cursor: pointer; }
         .crop-help { font-size: 0.9em; color: #666; font-style: italic; text-align: center; margin-bottom: 10px; }
+
+        /* === 12. RESPONSIVE === */
+        @media (max-width: 850px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { position: relative; top: 0; max-height: none; overflow: visible; padding: 20px; }
+            .portrait-frame { width: 100%; max-width: 320px; height: 440px; }
+            /* En movil, el recorte también debe ajustarse si se usa (opcional, aqui mantenemos fijo 276x380 para consistencia) */
+            .stats-grid, .stats-output-grid { grid-template-columns: repeat(3, 1fr); }
+            .main-title { font-size: 2.5em; }
+        }
     </style>
 </head>
 <body>
@@ -189,42 +311,49 @@
 <div class="container">
     <aside class="sidebar">
         <input type="file" id="img_input" accept="image/*" style="display:none" onchange="app.startCrop(this)">
+        
         <div class="portrait-frame" onclick="document.getElementById('img_input').click()">
-            <img id="char_img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E" alt="Retrato">
+            <img id="char_img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E" alt="Retrato">
             <span class="portrait-label">CAMBIAR RETRATO</span>
         </div>
 
-        <div style="margin-bottom: 15px;">
+        <div style="margin-bottom: 20px;">
             <label>Nombre del Aventurero</label>
-            <input type="text" id="char_name" placeholder="Ej: Valerius el Audaz" style="font-family: 'IM Fell English SC'; font-size: 1.3em;">
-            <textarea id="char_concept" placeholder="Biografía breve, concepto o notas del personaje..."></textarea>
+            <input type="text" id="char_name" placeholder="Ej: Valerius el Audaz" style="font-family: 'IM Fell English SC'; font-size: 1.4em;">
+            <textarea id="char_concept" placeholder="Concepto, biografía o notas..."></textarea>
         </div>
         
         <div class="action-bar">
-            <button class="btn" onclick="app.randomize()">Aleatorizar</button>
-            <button class="btn" onclick="app.saveChar()">Guardar</button>
-            <button class="btn btn-full" onclick="app.openLoadMenu()">Cargar</button>
+            <button class="btn btn-full" onclick="app.randomize()">🎲 Aleatorizar</button>
+            
+            <button class="btn" onclick="app.saveChar()">💾 Guardar</button>
+            <button class="btn" onclick="app.openLoadMenu()">📂 Cargar</button>
+            
+            <button class="btn btn-clear btn-full" onclick="app.clear()">🗑️ Limpiar Hoja</button>
         </div>
-        <button class="btn btn-clear" onclick="app.clear()">LIMPIAR HOJA</button>
 
         <div class="big-stat">
             <h3 id="res_pv">0</h3>
-            <span style="font-family: var(--font-title);">PUNTOS DE VIDA</span>
+            <span style="font-family: var(--font-title); font-weight: bold; font-size:1.1em; letter-spacing:1px;">PUNTOS DE VIDA</span>
         </div>
         
         <div class="stat-row"><span>Umbral de Carne</span><span class="stat-val" id="res_carne">0</span></div>
         <div class="stat-row"><span>Clase de Armadura</span><span class="stat-val" id="res_ca">10</span></div>
         <div class="stat-row"><span>Iniciativa</span><span class="stat-val" id="res_ini">+0</span></div>
         <div class="stat-row" style="color:#6a0dad"><span>Ataque Mágico</span><span class="stat-val" id="res_atq_mag">+2</span></div>
-        <hr>
+        
+        <hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
+        
         <div class="stat-row" style="color:var(--ink-red)"><span>Adrenalina</span><span class="stat-val" id="res_adr">0</span></div>
         <div class="stat-row" style="color:#003366"><span>Ingenio</span><span class="stat-val" id="res_ing">0</span></div>
         <div class="stat-row"><span>Filo Activo</span><span class="stat-val" id="res_filo_val">Físico</span></div>
-        <hr>
-        <div class="stat-row"><span>Carga (Slots)</span><span class="stat-val" id="res_carga">0 / 0</span></div>
-        <p id="carga_warn" class="warn-text" style="display:none;">¡ESTÁS SOBRECARGADO!</p>
         
-        <button id="btn-install" class="btn" style="display:none; color:var(--ink-red); border-color:var(--ink-red); margin-top:10px;">📲 INSTALAR APP</button>
+        <hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
+        
+        <div class="stat-row"><span>Carga (Slots)</span><span class="stat-val" id="res_carga">0 / 0</span></div>
+        <p id="carga_warn" class="warn-text" style="display:none; color:var(--ink-red); text-align:center; font-weight:bold;">¡SOBRECARGA!</p>
+        
+        <button id="btn-install" class="btn" style="display:none; color:var(--ink-red); border-color:var(--ink-red); margin-top:15px;">📲 INSTALAR APP</button>
     </aside>
 
     <main class="main-content">
@@ -261,11 +390,11 @@
                         <label>Arquetipo (Clase)</label>
                         <select id="sel_arq" onchange="app.updateOptions()"></select>
                         <div id="arq_info" class="bonus-desc"></div>
-                        <label style="margin-top:15px; font-size:0.95em; color:var(--ink-main);">Selección de Filo (Edge)</label>
+                        <label style="margin-top:15px; font-size:0.95em;">Selección de Filo (Edge)</label>
                         <select id="sel_filo" onchange="app.calc()"></select>
                     </div>
                 </div>
-                <div style="margin-top: 15px;">
+                <div style="margin-top: 20px;">
                     <label>Trasfondo</label>
                     <select id="sel_bg" onchange="app.updateOptions()"></select>
                     <div id="bg_info" class="bonus-desc"></div>
@@ -320,8 +449,8 @@
                 <button class="btn-confirm" onclick="app.toggleSection('skills', false)">✅ Confirmar Selección</button>
             </div>
             <div id="skills_summary_view" style="display:none;">
-                <label style="text-align:center; margin-bottom:10px;">MAESTRÍAS FINALES</label>
-                <div id="final_skills_list" style="text-align:center; line-height:1.6;"></div>
+                <label style="text-align:center; margin-bottom:10px; display:block; font-weight:bold; color:var(--ink-main);">MAESTRÍAS FINALES</label>
+                <div id="final_skills_list" style="text-align:center; line-height:1.8;"></div>
                 <button class="btn-edit" onclick="app.toggleSection('skills', true)">✏️ Modificar Habilidades</button>
             </div>
         </div>
@@ -336,7 +465,7 @@
                 <button class="btn-confirm" onclick="app.toggleSection('talents', false)">✅ Confirmar Talentos</button>
             </div>
             <div id="talents_summary_view" class="summary-view" style="display:none;">
-                <label style="text-align:center; color:var(--ink-red); margin-bottom:10px;">TALENTOS ACTIVOS</label>
+                <label style="text-align:center; color:var(--ink-red); margin-bottom:15px; display:block; font-weight:bold;">TALENTOS ACTIVOS</label>
                 <div id="talents_summary_list"></div>
                 <button class="btn-edit" onclick="app.toggleSection('talents', true)">✏️ Modificar Talentos</button>
             </div>
@@ -371,8 +500,8 @@
                 <button class="btn-confirm" onclick="app.toggleSection('combat', false)">✅ Confirmar Equipo</button>
             </div>
             <div id="combat_summary_view" class="summary-view" style="display:none;">
-                <div id="combat_summary_text" class="summary-text"></div>
-                <div id="combat_summary_stats" style="text-align:center; margin-top:10px; font-family:var(--font-mono); font-weight:bold; color:var(--ink-red);"></div>
+                <div id="combat_summary_text" class="summary-text" style="line-height:1.6;"></div>
+                <div id="combat_summary_stats" style="text-align:center; margin-top:12px; font-family:var(--font-mono); font-weight:bold; color:var(--ink-red); font-size:1.1em;"></div>
                 <button class="btn-edit" onclick="app.toggleSection('combat', true)">✏️ Modificar</button>
             </div>
         </div>
@@ -406,7 +535,7 @@
 </dialog>
 
 <script>
-// --- DB (Idéntica) ---
+// --- BASE DE DATOS ---
 const DB = {
     descriptors: { "humano": { name: "Humano", bonus: "+1 a Dos", mods:{}, grant: [], txt: "Versátil, Ambición." }, "enano": { name: "Enano", bonus: "+2 CON, +1 FUE", mods:{CON:2, FUE:1}, grant: [], txt: "Robusto, Visión Oscuridad." }, "elfo": { name: "Elfo", bonus: "+2 DES, +1 SAB", mods:{DES:2, SAB:1}, grant: ["Proeza Física"], txt: "Inmune Encanto, Grado 1 Proeza Física." }, "medio_elfo": { name: "Medio Elfo", bonus: "+1 a Dos", mods:{}, grant: ["Perspicacia", "Influencia"], txt: "Visión Oscuridad, Empatía Experta." }, "infernal": { name: "Infernal", bonus: "+2 CAR, +1 INT", mods:{CAR:2, INT:1}, grant: [], txt: "Resistencia Fuego, Visión Oscuridad." }, "sintetico": { name: "Sintético", bonus: "+2 CON", mods:{CON:2}, grant: [], txt: "Inmune Veneno, No duerme." }, "aesir": { name: "Aesir", bonus: "+2 CAR, +1 SAB", mods:{CAR:2, SAB:1}, grant: [], txt: "Resistencia Radiante." }, "mutante": { name: "Mutante", bonus: "+2 Elige, +1 CON", mods:{CON:1}, grant: [], txt: "Inmune Tóxico, Rasgo Aberrante." }, "medio_orco": { name: "Medio Orco", bonus: "+2 FUE, +1 CON", mods:{FUE:2, CON:1}, grant: [], txt: "Implacable (1 PV al caer)." }, "draconido": { name: "Dracónido", bonus: "+2 FUE, +1 CAR", mods:{FUE:2, CAR:1}, grant: [], txt: "Resistencia Elemental, Presencia." }, "cambiante": { name: "Cambiante", bonus: "+2 FUE/DES, +1 CON", mods:{FUE:2, CON:1}, grant: ["Supervivencia"], txt: "Garras Naturales, Instinto." } },
     archetypes: { "valor": { name: "Audaz (Luchador)", pv: 8, adr: 6, ing: 2, ca: 1, limit: 2, skills: ["Proeza Física", "Intimidación", "Percepción", "Supervivencia"], edges: ["Físico", "Mental"], txt: "Competencia Total. Ignora requisitos. +1 CA." }, "gracia": { name: "Sutil (Experto)", pv: 6, adr: 4, ing: 4, ca: 0, limit: 2, skills: ["Sigilo", "Engaño", "Investigación", "Percepción", "Proeza Física", "Tecnología"], edges: ["Físico", "Mental", "Flexible"], txt: "Comp. Simple + Sutil. Ignora req en Sutiles." }, "espiritu": { name: "Sagaz (Adepto)", pv: 4, adr: 0, ing: 10, ca: 0, limit: 4, skills: ["Arcano", "Historia", "Medicina", "Naturaleza", "Perspicacia", "Investigación", "Religión"], edges: ["Mental", "Físico"], txt: "Comp. Simple solamente. Debe cumplir requisitos." } },
@@ -417,6 +546,7 @@ const DB = {
     weapons: { "desarmado": { name: "Desarmado", dmg: "1d4", stat: "FUE", slots: 0, cat: "simple", prop: "sutil", req: 0 }, "daga": { name: "Daga", dmg: "1d4", stat: "FIN", slots: 1, cat: "simple", prop: "sutil", req: 0 }, "baston": { name: "Bastón", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "versatil", req: 0 }, "martillo_l": { name: "Martillo Ligero", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "arrojadiza", req: 0 }, "ballesta": { name: "Ballesta Ligera", dmg: "1d8", stat: "DES", slots: 2, cat: "simple", prop: "distancia", req: 0 }, "espada_c": { name: "Espada Corta", dmg: "1d6", stat: "FIN", slots: 1, cat: "marcial", prop: "sutil", req: 0 }, "espada_l": { name: "Espada Larga", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 }, "hacha": { name: "Hacha Batalla", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 }, "martillo_g": { name: "Martillo Guerra", dmg: "1d8/10", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 }, "espadon": { name: "Espadón", dmg: "2d6", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 }, "gran_hacha": { name: "Gran Hacha", dmg: "1d12", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 }, "arco_c": { name: "Arco Corto", dmg: "1d6", stat: "DES", slots: 2, cat: "marcial", prop: "distancia", req: 0 }, "arco_l": { name: "Arco Largo", dmg: "1d8", stat: "DES", slots: 3, cat: "marcial", prop: "distancia", req: 11 } }
 };
 
+// --- LOGICA PRINCIPAL ---
 const app = {
     cropState: { img: null, x: 0, y: 0, zoom: 1, isDragging: false, lastX: 0, lastY: 0 },
 
@@ -441,8 +571,8 @@ const app = {
             reader.onload = function(e) {
                 app.cropState.img = new Image();
                 app.cropState.img.onload = function() {
-                    // Dimensiones actualizadas al nuevo tamaño del retrato
-                    const containerW = 270; const containerH = 380;
+                    // Dimensiones para 276x380
+                    const containerW = 276; const containerH = 380;
                     const scaleW = containerW / app.cropState.img.naturalWidth;
                     const scaleH = containerH / app.cropState.img.naturalHeight;
                     const baseScale = Math.max(scaleW, scaleH);
@@ -488,23 +618,19 @@ const app = {
         const cy = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
         const dx = cx - app.cropState.lastX;
         const dy = cy - app.cropState.lastY;
-        app.cropState.x += dx;
-        app.cropState.y += dy;
-        app.cropState.lastX = cx;
-        app.cropState.lastY = cy;
+        app.cropState.x += dx; app.cropState.y += dy;
+        app.cropState.lastX = cx; app.cropState.lastY = cy;
         app.updateCropView();
     },
 
     endDrag: function() { app.cropState.isDragging = false; },
 
     applyCrop: function() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        // Dimensiones actualizadas al nuevo tamaño del retrato (x2 para alta resolución)
-        const containerW = 270; const containerH = 380;
+        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+        const containerW = 276; const containerH = 380;
         const targetW = containerW * 2; const targetH = containerH * 2;
         canvas.width = targetW; canvas.height = targetH;
-        ctx.fillStyle = "black"; ctx.fillRect(0,0,targetW, targetH);
+        ctx.fillStyle = "#1a1a1a"; ctx.fillRect(0,0,targetW, targetH);
         ctx.translate(app.cropState.x * 2, app.cropState.y * 2);
         ctx.scale(app.cropState.zoom * 2, app.cropState.zoom * 2);
         ctx.drawImage(app.cropState.img, 0, 0);
@@ -549,7 +675,6 @@ const app = {
         const stats = { FUE: parseInt(document.getElementById('base_FUE').value)||8, DES: parseInt(document.getElementById('base_DES').value)||8, CON: parseInt(document.getElementById('base_CON').value)||8, INT: parseInt(document.getElementById('base_INT').value)||8, SAB: parseInt(document.getElementById('base_SAB').value)||8, CAR: parseInt(document.getElementById('base_CAR').value)||8 };
         const descData = DB.descriptors[document.getElementById('sel_desc').value]; for(let k in descData.mods) stats[k] += descData.mods[k];
         if(document.querySelector('input[data-id="atleta"]:checked')) stats.DES += 1;
-        
         let statHTML = "", summaryHTML = "";
         for(let k in stats) { 
             let mod = this.getMod(stats[k]); 
@@ -639,7 +764,8 @@ const app = {
         document.getElementById('char_name').value = ""; document.getElementById('char_concept').value = "";
         const resets = ['sel_desc', 'sel_arq', 'sel_bg', 'sel_armor', 'sel_weapon', 'sel_shield']; resets.forEach(id => document.getElementById(id).selectedIndex = 0);
         const checks = document.querySelectorAll('input[type="checkbox"], input[type="radio"]'); checks.forEach(c => c.checked = false);
-        document.getElementById('char_img').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
+        document.getElementById('char_img').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
+        
         this.autoResize('char_concept'); 
         ['talents', 'skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, true));
         this.updateOptions(true); this.calc();
@@ -669,8 +795,10 @@ const app = {
         this.updateOptions(true); 
         document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
         data.checks.forEach(item => { let el = document.getElementById(item.id); if (!el) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`); if (el) el.checked = true; });
+        
         this.autoResize('char_concept'); 
         this.showTalentSummary(); ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
+
         this.calc(); document.getElementById('char_manager').close();
     },
 
