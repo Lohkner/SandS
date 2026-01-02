@@ -37,7 +37,7 @@
         h2 { color: var(--ink-red); font-size: 1.6em; border-bottom: 1px solid var(--ink-accent); margin-top: 0; padding-bottom: 5px; }
         h3 { font-size: 1.15em; text-decoration: underline; margin-bottom: 8px; color: var(--ink-accent); }
 
-        .sidebar, .section {
+        .section {
             background: #fffef8; border: 2px solid var(--ink-main); padding: 20px; margin-bottom: 25px;
             box-shadow: 5px 5px 0px rgba(0,0,0,0.1); position: relative;
         }
@@ -47,7 +47,28 @@
             background: #fffef8; padding: 0 10px; font-size: 1.2em; color: var(--ink-accent);
         }
 
-        .sidebar { background: #fffef8; border: 2px solid var(--ink-main); padding: 15px; box-shadow: 5px 5px 0px rgba(0,0,0,0.1); position: sticky; top: 20px; height: fit-content; }
+        /* === 3. BARRA LATERAL (SOLUCIÓN SCROLL INVISIBLE) === */
+        .sidebar { 
+            background: #fffef8; 
+            border: 2px solid var(--ink-main); 
+            padding: 15px; 
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.1); 
+            
+            /* Sticky con altura controlada */
+            position: sticky; 
+            top: 20px; 
+            max-height: calc(100vh - 40px); /* Altura máxima = Pantalla menos margen */
+            overflow-y: auto; /* Permitir scroll si es muy alta */
+            
+            /* Ocultar barra de scroll (Firefox, IE, Edge) */
+            scrollbar-width: none; 
+            -ms-overflow-style: none;  
+        }
+        
+        /* Ocultar barra de scroll (Chrome, Safari, Opera) */
+        .sidebar::-webkit-scrollbar { 
+            display: none; 
+        }
 
         /* === 4. FORMULARIOS === */
         label { font-family: var(--font-title); color: var(--ink-accent); font-size: 1.1em; display: block; margin-top: 10px; }
@@ -70,27 +91,24 @@
         /* === 5. UI ELEMENTS & GRIDS === */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
-        /* GRID UNIFICADO PARA INPUTS Y RESULTADOS DE STATS */
+        /* GRID DE ATRIBUTOS CORREGIDO */
         .stats-grid, .stats-output-grid { 
             display: grid; 
-            grid-template-columns: repeat(6, 1fr); /* PC: 6 columnas */
+            grid-template-columns: repeat(6, 1fr); 
             gap: 10px; 
         }
         
-        /* CELDAS DEL RESULTADO */
-        .stat-box {
-            border: 1px solid #ccc;
-            background: #fdfdfd;
-            text-align: center;
+        .stat-box, .stat-box-dark {
+            text-align: center; font-family: var(--font-mono); font-size: 0.95em;
             padding: 5px;
-            font-family: var(--font-mono);
-            font-size: 0.95em;
         }
+        .stat-box { border: 1px solid #ccc; background: #fdfdfd; }
+        .stat-box-dark { color: #fff; } /* Para el fondo negro */
 
         @media (max-width: 800px) {
-            .stats-grid, .stats-output-grid { grid-template-columns: repeat(3, 1fr); } /* MÓVIL: 3 col x 2 filas */
+            .stats-grid, .stats-output-grid { grid-template-columns: repeat(3, 1fr); }
             .container { grid-template-columns: 1fr; } 
-            .sidebar { position: relative; top: 0; }
+            .sidebar { position: relative; top: 0; max-height: none; overflow: visible; }
         }
 
         .skill-area { border: 1px solid #ccc; padding: 8px; background: #fdfdfd; max-height: 200px; overflow-y: auto; }
@@ -134,16 +152,14 @@
         /* === 7. RESÚMENES === */
         .summary-view { border: 1px solid var(--ink-accent); background: #fffdf5; padding: 12px; box-shadow: inset 0 0 8px rgba(0,0,0,0.05); margin-top: 10px; }
         .summary-text { font-family: var(--font-mono); font-size: 1em; text-align: center; color: var(--ink-main); font-weight: bold; }
+        
         .bonus-desc { font-family: var(--font-body); font-style: italic; color: #666; font-size: 0.95em; margin-top: 5px; line-height: 1.2; }
         
-        /* Stats Final Display en Edit Mode (también en Grid) */
         #stats_final_display { 
             background: var(--ink-main); color: #fff; padding: 10px; margin-top: 20px; 
             border: 2px solid var(--ink-main); box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
         }
-        /* Celdas oscuras para el display negro */
-        .stat-box-dark { text-align: center; font-family: var(--font-mono); font-size: 1em; }
-
+        
         #weapon_info { font-size: 1.2em; font-family: var(--font-mono); margin: 5px 0 0 0; color: var(--ink-main); font-weight: 700; }
 
         input[type="radio"], input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 2px solid var(--ink-main); cursor: pointer; display: inline-block; vertical-align: middle; margin-right: 5px; }
@@ -231,7 +247,6 @@
                 <div id="stats_final_display" class="stats-output-grid"></div>
                 <button class="btn-confirm" onclick="app.toggleSection('stats', false)">✅ Confirmar Atributos</button>
             </div>
-            
             <div id="stats_summary_view" class="summary-view" style="display:none;">
                 <div id="stats_summary_text" class="stats-output-grid"></div>
                 <button class="btn-edit" onclick="app.toggleSection('stats', true)">✏️ Modificar</button>
@@ -619,7 +634,10 @@ const app = {
         const arqLimit = DB.archetypes[document.getElementById('sel_arq').value].limit;
         randChecks('chk_arq', arqLimit); randChecks('chk_bg', 2); 
         randChecks('chk_talents', 3);
-        this.showTalentSummary(); ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
+        
+        // COLLAPSE ALL
+        this.showTalentSummary();
+        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
         this.calc();
     },
 
@@ -629,6 +647,7 @@ const app = {
         const resets = ['sel_desc', 'sel_arq', 'sel_bg', 'sel_armor', 'sel_weapon', 'sel_shield']; resets.forEach(id => document.getElementById(id).selectedIndex = 0);
         const checks = document.querySelectorAll('input[type="checkbox"], input[type="radio"]'); checks.forEach(c => c.checked = false);
         document.getElementById('char_img').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
+        
         this.autoResize('char_concept'); 
         ['talents', 'skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, true));
         this.updateOptions(true); this.calc();
@@ -658,8 +677,11 @@ const app = {
         this.updateOptions(true); 
         document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
         data.checks.forEach(item => { let el = document.getElementById(item.id); if (!el) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`); if (el) el.checked = true; });
+        
         this.autoResize('char_concept'); 
-        this.showTalentSummary(); ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
+        this.showTalentSummary();
+        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
+
         this.calc(); document.getElementById('char_manager').close();
     },
 
