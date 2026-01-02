@@ -5,106 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S&S: CRÓNICAS ANTIGUAS</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Crimson+Text:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
 
     <style>
-        /* === VARIABLES DE COLOR OSR === */
+        /* === 1. VARIABLES === */
         :root {
             --bg-paper: #f3e5ce; --ink-main: #1a1a1a; --ink-red: #8b0000; --ink-accent: #4a3b2a;
             --font-title: 'IM Fell English SC', serif; --font-body: 'Crimson Text', serif; --font-mono: 'Courier Prime', monospace;
         }
 
-        /* === BASIC SETUP === */
+        * { box-sizing: border-box; }
+
         body {
             font-family: var(--font-body); background-color: var(--bg-paper); color: var(--ink-main);
             padding: 25px; background-image: radial-gradient(#d6c6a8 1px, transparent 1px); background-size: 20px 20px;
+            font-size: 16px; line-height: 1.5;
         }
+
+        .main-title {
+            font-family: var(--font-title); color: var(--ink-red); font-size: 4em; text-align: center;
+            margin: 0 auto 30px auto; max-width: 900px; border-bottom: 4px double var(--ink-red);
+            letter-spacing: 2px; line-height: 1; padding-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
         .container { max-width: 1100px; margin: auto; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
 
-        h1 { font-family: var(--font-title); font-size: 2.5em; text-align: center; border-bottom: 3px double var(--ink-main); margin-bottom: 30px; }
-        h2 { font-family: var(--font-title); color: var(--ink-red); font-size: 1.5em; border-bottom: 1px solid var(--ink-accent); margin-top: 0; }
-        h3 { font-family: var(--font-title); font-size: 1.1em; text-decoration: underline; margin-bottom: 5px; }
+        /* === 2. TIPOGRAFÍA Y ESTILOS === */
+        h1, h2, h3 { font-family: var(--font-title); font-weight: normal; color: var(--ink-main); }
+        h2 { color: var(--ink-red); font-size: 1.6em; border-bottom: 1px solid var(--ink-accent); margin-top: 0; padding-bottom: 5px; }
+        h3 { font-size: 1.15em; text-decoration: underline; margin-bottom: 8px; color: var(--ink-accent); }
 
-        .sidebar, .section { background: #fffef8; border: 2px solid var(--ink-main); padding: 20px; margin-bottom: 25px; box-shadow: 5px 5px 0px rgba(0,0,0,0.1); position: relative; }
-        .section::before { content: "❖"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #fffef8; padding: 0 10px; font-size: 1.2em; }
+        .sidebar, .section {
+            background: #fffef8; border: 2px solid var(--ink-main); padding: 20px; margin-bottom: 25px;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.1); position: relative;
+        }
+        
+        .section::before {
+            content: "❖"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: #fffef8; padding: 0 10px; font-size: 1.2em; color: var(--ink-accent);
+        }
 
-        label { font-family: var(--font-title); color: var(--ink-accent); display: block; margin-top: 10px; }
-        input, select { background: transparent; border: none; border-bottom: 2px dashed #999; font-family: var(--font-mono); font-weight: bold; color: var(--ink-main); padding: 5px; width: 100%; font-size: 1.1em; }
-        input:focus, select:focus { outline: none; border-bottom: 2px solid var(--ink-red); background: rgba(139, 0, 0, 0.05); }
+        /* === 3. BARRA LATERAL === */
+        .sidebar { background: #fffef8; border: 2px solid var(--ink-main); padding: 15px; box-shadow: 5px 5px 0px rgba(0,0,0,0.1); position: sticky; top: 20px; height: fit-content; }
+
+        /* === 4. FORMULARIOS === */
+        label { font-family: var(--font-title); color: var(--ink-accent); font-size: 1.1em; display: block; margin-top: 10px; }
+        
+        input[type="text"], input[type="number"], select, textarea {
+            background: transparent; border: none; border-bottom: 2px dashed #888;
+            font-family: var(--font-mono); font-weight: 700; color: var(--ink-main);
+            padding: 4px 0; width: 100%; font-size: 1.1em; transition: 0.2s;
+        }
+        
+        textarea { 
+            resize: none; height: 6em; overflow-y: auto; font-size: 0.95em; 
+            color: #444; font-style: italic; line-height: 1.4; margin-top: 8px;
+            border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.3); padding: 8px;
+        }
+
+        input:focus, select:focus, textarea:focus { outline: none; border-bottom: 2px solid var(--ink-red); background: rgba(139, 0, 0, 0.05); }
         input[type="number"] { text-align: center; font-size: 1.4em; }
 
+        /* === 5. UI ELEMENTS & GRIDS === */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
         
-        .skill-area { border: 1px solid var(--ink-main); padding: 10px; background: #fdfdfd; max-height: 200px; overflow-y: auto; }
-        .skill-opt { cursor: pointer; display: block; margin-bottom: 4px; }
+        /* GRID DE ATRIBUTOS MEJORADO */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(6, 1fr); /* 6 en línea */
+            gap: 10px; 
+        }
+        
+        /* Media Query para Pantallas Pequeñas: Pasa a 3x2 automáticamente */
+        @media (max-width: 800px) {
+            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+            .container { grid-template-columns: 1fr; } /* Sidebar pasa arriba en móvil */
+            .sidebar { position: relative; top: 0; }
+        }
+
+        .skill-area { border: 1px solid #ccc; padding: 8px; background: #fdfdfd; max-height: 200px; overflow-y: auto; }
+        .skill-opt { cursor: pointer; display: block; margin-bottom: 4px; font-size: 0.95em; }
         .skill-opt:hover { background-color: #eee; }
-        .skill-tag { display: inline-block; border: 1px solid var(--ink-main); padding: 2px 6px; margin: 2px; background: #fff; font-family: var(--font-mono); font-size: 0.9em; box-shadow: 2px 2px 0px #ccc; }
-        .grade-1 { background: var(--ink-main); color: #fff; border-color: var(--ink-main); }
+        
+        .big-stat { border: 4px double var(--ink-main); text-align: center; padding: 10px; margin-bottom: 15px; border-radius: 50% 50% 0 0; background: #fff; }
+        .big-stat h3 { margin: 0; font-size: 3.5em; color: var(--ink-red); line-height: 1; }
+        .stat-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding: 6px 0; font-size: 1.05em; }
+        .stat-val { font-family: var(--font-mono); font-weight: 700; font-size: 1.2em; }
 
-        .res-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-        .big-stat { border: 4px solid var(--ink-main); text-align: center; padding: 10px; margin-bottom: 20px; border-radius: 50% 50% 0 0; background: #fff; }
-        .big-stat h3 { margin: 0; font-size: 3.5em; color: var(--ink-red); font-family: var(--font-title); }
-        .stat-row { display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 5px 0; font-size: 1.2em; }
-        .stat-val { font-family: var(--font-mono); font-weight: bold; }
-
-        .portrait-frame { width: 180px; height: 270px; margin: 0 auto 20px auto; border: 4px double var(--ink-main); border-radius: 4px; overflow: hidden; background: #e8dcc5; cursor: pointer; position: relative; box-shadow: 3px 3px 5px rgba(0,0,0,0.2); transition: transform 0.2s; }
-        .portrait-frame:hover { transform: scale(1.02); border-color: var(--ink-red); }
+        .portrait-frame {
+            width: 140px; height: 200px; margin: 0 auto 15px auto;
+            border: 4px double var(--ink-main); border-radius: 2px;
+            overflow: hidden; background: #e8dcc5; cursor: pointer;
+            position: relative; box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .portrait-frame:hover { transform: translateY(-2px); border-color: var(--ink-red); }
         .portrait-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .portrait-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.7em; text-align: center; padding: 5px; font-family: var(--font-mono); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .portrait-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(26, 26, 26, 0.8); color: #f3e5ce; font-size: 0.7em; text-align: center; padding: 4px; font-family: var(--font-mono); letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
         .portrait-frame:hover .portrait-label { opacity: 1; }
 
-        .action-bar { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
-        .btn { background: #fff; border: 2px solid var(--ink-main); color: var(--ink-main); font-family: var(--font-title); font-size: 1.2em; padding: 10px; width: 100%; cursor: pointer; box-shadow: 4px 4px 0px var(--ink-main); text-transform: uppercase; }
-        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--ink-main); }
+        /* === 6. BOTONES === */
+        .action-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .btn { background: #fff; border: 2px solid var(--ink-main); color: var(--ink-main); font-family: var(--font-title); font-size: 1.1em; padding: 8px; width: 100%; cursor: pointer; box-shadow: 3px 3px 0px var(--ink-main); transition: all 0.1s; letter-spacing: 0.5px; }
+        .btn-full { grid-column: span 2; } 
+        .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--ink-main); }
         .btn:hover { background: var(--ink-red); color: #fff; border-color: var(--ink-red); }
-        .btn-clear { background: #eee; border: 1px dashed var(--ink-main); font-size: 1em; margin-bottom: 20px;}
-
-        .bonus-desc { font-family: var(--font-body); font-style: italic; color: #555; font-size: 0.95em; margin-top: 5px; }
-        #stats_final_display { font-family: var(--font-mono); background: var(--ink-main); color: #ffffff !important; padding: 8px; margin-top: 15px; font-size: 1.1em; border: 2px solid var(--ink-main); }
-
-        input[type="radio"], input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 2px solid var(--ink-main); cursor: pointer; display: inline-block; vertical-align: middle; margin-right: 5px; }
-        input[type="radio"] { border-radius: 50%; }
-        input[type="radio"]:checked, input[type="checkbox"]:checked { background-color: var(--ink-red); border-color: var(--ink-red); box-shadow: inset 0 0 0 3px var(--bg-paper); }
-
-        .sidebar { position: sticky; top: 20px; height: fit-content; }
-        hr { border: 0; border-top: 2px solid var(--ink-main); margin: 15px 0; height: 3px; border-bottom: 1px solid var(--ink-main); }
-        .warn-text { color: var(--ink-red); font-family: var(--font-title); font-weight: bold; text-align: center; }
-
-        /* === ESTILOS NUEVOS PARA TALENTOS Y SKILLS === */
-        #talents_summary_view, #skills_summary_view {
-            border: 1px solid var(--ink-main);
-            background: #fff;
-            padding: 15px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-            margin-top: 10px;
-        }
-        .talent-final-item { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dotted #ccc; }
-        .talent-final-item:last-child { border-bottom: none; }
-        .btn-edit { 
-            font-size: 0.9em; padding: 5px 10px; background: transparent; 
-            border: 1px solid var(--ink-main); cursor: pointer; display: block; margin: 10px auto 0 auto;
-            text-transform: uppercase; font-family: var(--font-mono);
-        }
-        .btn-edit:hover { background: var(--ink-main); color: #fff; }
-        
-        .btn-confirm {
-            background: var(--ink-main); color: #fff; border:none; padding: 8px; 
-            width:100%; cursor: pointer; font-family: var(--font-title);
-            margin-top: 10px;
-        }
-
-        dialog.modal-osr { background: var(--bg-paper); color: var(--ink-main); border: 4px double var(--ink-main); width: 90%; max-width: 500px; }
-        dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
-        .modal-header { background: var(--ink-main); color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 20px; max-height: 400px; overflow-y: auto; }
-        .char-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--ink-main); padding: 10px 0; }
-        .btn-mini { padding: 5px 10px; margin-left: 5px; cursor: pointer; border: 1px solid var(--ink-main); }
+        .btn-clear { background: #f0f0f0; border: 1px dashed var(--ink-main); font-size: 0.9em; margin-bottom: 20px; box-shadow: none; padding: 5px; }
+        .btn-mini { padding: 3px 8px; margin-left: 5px; cursor: pointer; border: 1px solid var(--ink-main); font-family: var(--font-mono); font-size: 0.8em; }
         .btn-load { background: var(--ink-main); color: #fff; }
         .btn-del { background: transparent; color: var(--ink-red); border-color: var(--ink-red); }
+
+        .btn-confirm { background: var(--ink-main); color: #fff; border: none; padding: 8px; width: 100%; cursor: pointer; font-family: var(--font-title); font-size: 1.1em; margin-top: 10px; letter-spacing: 1px; }
+        .btn-confirm:hover { background: var(--ink-accent); }
+
+        .btn-edit { font-size: 0.85em; padding: 5px 12px; background: transparent; border: 1px solid var(--ink-main); cursor: pointer; display: block; margin: 10px auto 0 auto; font-family: var(--font-mono); color: var(--ink-main); text-transform: uppercase; }
+        .btn-edit:hover { background: var(--ink-main); color: #fff; }
+
+        /* === 7. RESÚMENES (SUMMARY VIEWS) === */
+        .summary-view { border: 1px solid var(--ink-accent); background: #fffdf5; padding: 12px; box-shadow: inset 0 0 8px rgba(0,0,0,0.05); margin-top: 10px; }
+        .summary-text { font-family: var(--font-mono); font-size: 1em; text-align: center; color: var(--ink-main); font-weight: bold; }
+        
+        .bonus-desc { font-family: var(--font-body); font-style: italic; color: #666; font-size: 0.95em; margin-top: 5px; line-height: 1.2; }
+        #stats_final_display { font-family: var(--font-mono); background: var(--ink-main); color: #fff; padding: 10px; margin-top: 20px; font-size: 1em; border: 2px solid var(--ink-main); text-align: center; box-shadow: 3px 3px 0px rgba(0,0,0,0.2); }
+        #weapon_info { font-size: 1.2em; font-family: var(--font-mono); margin: 5px 0 0 0; color: var(--ink-main); font-weight: 700; }
+
+        dialog.modal-osr { background: var(--bg-paper); color: var(--ink-main); border: 4px double var(--ink-main); width: 95%; max-width: 480px; padding: 0; }
+        dialog::backdrop { background: rgba(26, 26, 26, 0.85); backdrop-filter: blur(2px); }
+        .modal-header { background: var(--ink-main); color: #fff; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 15px; max-height: 60vh; overflow-y: auto; }
+        .char-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--ink-main); padding: 10px 0; }
     </style>
 </head>
 <body>
+
+<h1 class="main-title">Stars & Sorcery</h1>
 
 <div class="container">
     <aside class="sidebar">
@@ -114,21 +150,22 @@
             <span class="portrait-label">CAMBIAR RETRATO</span>
         </div>
 
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 15px;">
             <label>Nombre del Aventurero</label>
-            <input type="text" id="char_name" placeholder="Escribe aquí..." style="font-family: 'IM Fell English SC'; font-size: 1.3em;">
+            <input type="text" id="char_name" placeholder="Ej: Valerius el Audaz" style="font-family: 'IM Fell English SC'; font-size: 1.3em;">
+            <textarea id="char_concept" placeholder="Biografía breve, concepto o notas del personaje..."></textarea>
         </div>
         
         <div class="action-bar">
             <button class="btn" onclick="app.randomize()">Aleatorizar</button>
             <button class="btn" onclick="app.saveChar()">Guardar</button>
-            <button class="btn" onclick="app.openLoadMenu()">Cargar</button>
+            <button class="btn btn-full" onclick="app.openLoadMenu()">Cargar</button>
         </div>
         <button class="btn btn-clear" onclick="app.clear()">LIMPIAR HOJA</button>
 
         <div class="big-stat">
             <h3 id="res_pv">0</h3>
-            <span style="font-family: var(--font-title); font-weight: bold;">PUNTOS DE VIDA</span>
+            <span style="font-family: var(--font-title);">PUNTOS DE VIDA</span>
         </div>
         
         <div class="stat-row"><span>Umbral de Carne</span><span class="stat-val" id="res_carne">0</span></div>
@@ -149,62 +186,82 @@
     <main class="main-content">
         <div class="section">
             <h2>I. Los Seis Pilares (8-18)</h2>
-            <div class="grid-4">
-                <div><label>FUE</label><input type="number" id="base_FUE" value="8" min="3" max="18" onchange="app.calc()"></div>
-                <div><label>DES</label><input type="number" id="base_DES" value="8" min="3" max="18" onchange="app.calc()"></div>
-                <div><label>CON</label><input type="number" id="base_CON" value="8" min="3" max="18" onchange="app.calc()"></div>
-                <div><label>INT</label><input type="number" id="base_INT" value="8" min="3" max="18" onchange="app.calc()"></div>
-                <div><label>SAB</label><input type="number" id="base_SAB" value="8" min="3" max="18" onchange="app.calc()"></div>
-                <div><label>CAR</label><input type="number" id="base_CAR" value="8" min="3" max="18" onchange="app.calc()"></div>
+            <div id="stats_edit_view">
+                <div class="stats-grid">
+                    <div><label>FUE</label><input type="number" id="base_FUE" value="8" min="3" max="18" onchange="app.calc()"></div>
+                    <div><label>DES</label><input type="number" id="base_DES" value="8" min="3" max="18" onchange="app.calc()"></div>
+                    <div><label>CON</label><input type="number" id="base_CON" value="8" min="3" max="18" onchange="app.calc()"></div>
+                    <div><label>INT</label><input type="number" id="base_INT" value="8" min="3" max="18" onchange="app.calc()"></div>
+                    <div><label>SAB</label><input type="number" id="base_SAB" value="8" min="3" max="18" onchange="app.calc()"></div>
+                    <div><label>CAR</label><input type="number" id="base_CAR" value="8" min="3" max="18" onchange="app.calc()"></div>
+                </div>
+                <div id="stats_final_display"></div>
+                <button class="btn-confirm" onclick="app.toggleSection('stats', false)">✅ Confirmar Atributos</button>
             </div>
-            <div id="stats_final_display"></div>
+            <div id="stats_summary_view" class="summary-view" style="display:none;">
+                <div id="stats_summary_text" class="summary-text" style="font-size:0.9em;"></div>
+                <button class="btn-edit" onclick="app.toggleSection('stats', true)">✏️ Modificar</button>
+            </div>
         </div>
 
         <div class="section">
             <h2>II. Identidad y Origen</h2>
-            <div class="grid-2">
-                <div>
-                    <label>Linaje (Raza)</label>
-                    <select id="sel_desc" onchange="app.updateOptions()"></select>
-                    <div id="desc_info" class="bonus-desc"></div>
+            <div id="identity_edit_view">
+                <div class="grid-2">
+                    <div>
+                        <label>Linaje (Raza)</label>
+                        <select id="sel_desc" onchange="app.updateOptions()"></select>
+                        <div id="desc_info" class="bonus-desc"></div>
+                    </div>
+                    <div>
+                        <label>Arquetipo (Clase)</label>
+                        <select id="sel_arq" onchange="app.updateOptions()"></select>
+                        <div id="arq_info" class="bonus-desc"></div>
+                        <label style="margin-top:15px; font-size:0.95em; color:var(--ink-main);">Selección de Filo (Edge)</label>
+                        <select id="sel_filo" onchange="app.calc()"></select>
+                    </div>
                 </div>
-                <div>
-                    <label>Arquetipo (Clase)</label>
-                    <select id="sel_arq" onchange="app.updateOptions()"></select>
-                    <div id="arq_info" class="bonus-desc"></div>
-                    <label style="margin-top:10px; font-size:0.9em;">Selección de Filo (Edge)</label>
-                    <select id="sel_filo" onchange="app.calc()"></select>
+                <div style="margin-top: 15px;">
+                    <label>Trasfondo</label>
+                    <select id="sel_bg" onchange="app.updateOptions()"></select>
+                    <div id="bg_info" class="bonus-desc"></div>
                 </div>
+                <button class="btn-confirm" onclick="app.toggleSection('identity', false)">✅ Confirmar Identidad</button>
             </div>
-            <div style="margin-top: 15px;">
-                <label>Trasfondo</label>
-                <select id="sel_bg" onchange="app.updateOptions()"></select>
-                <div id="bg_info" class="bonus-desc"></div>
+            <div id="identity_summary_view" class="summary-view" style="display:none;">
+                <div id="identity_summary_text" class="summary-text"></div>
+                <button class="btn-edit" onclick="app.toggleSection('identity', true)">✏️ Modificar</button>
             </div>
         </div>
 
         <div class="section">
             <h2>III. Tiradas de Salvación (Bono +2)</h2>
-            <div class="grid-2">
-                <div>
-                    <h3>Comunes</h3>
-                    <label class="skill-opt"><input type="radio" name="save_common" value="DES" onchange="app.calc()"> Destreza (DES)</label>
-                    <label class="skill-opt"><input type="radio" name="save_common" value="CON" onchange="app.calc()"> Constitución (CON)</label>
-                    <label class="skill-opt"><input type="radio" name="save_common" value="SAB" onchange="app.calc()"> Sabiduría (SAB)</label>
+            <div id="saves_edit_view">
+                <div class="grid-2">
+                    <div>
+                        <h3>Comunes</h3>
+                        <label class="skill-opt"><input type="radio" name="save_common" value="DES" onchange="app.calc()"> Destreza (DES)</label>
+                        <label class="skill-opt"><input type="radio" name="save_common" value="CON" onchange="app.calc()"> Constitución (CON)</label>
+                        <label class="skill-opt"><input type="radio" name="save_common" value="SAB" onchange="app.calc()"> Sabiduría (SAB)</label>
+                    </div>
+                    <div>
+                        <h3>Poco Comunes</h3>
+                        <label class="skill-opt"><input type="radio" name="save_uncommon" value="FUE" onchange="app.calc()"> Fuerza (FUE)</label>
+                        <label class="skill-opt"><input type="radio" name="save_uncommon" value="INT" onchange="app.calc()"> Intelecto (INT)</label>
+                        <label class="skill-opt"><input type="radio" name="save_uncommon" value="CAR" onchange="app.calc()"> Carisma (CAR)</label>
+                    </div>
                 </div>
-                <div>
-                    <h3>Poco Comunes</h3>
-                    <label class="skill-opt"><input type="radio" name="save_uncommon" value="FUE" onchange="app.calc()"> Fuerza (FUE)</label>
-                    <label class="skill-opt"><input type="radio" name="save_uncommon" value="INT" onchange="app.calc()"> Intelecto (INT)</label>
-                    <label class="skill-opt"><input type="radio" name="save_uncommon" value="CAR" onchange="app.calc()"> Carisma (CAR)</label>
-                </div>
+                <div id="saves_display" style="margin-top: 20px; border-top: 2px double var(--ink-main); padding-top: 10px; display: grid; grid-template-columns: repeat(6, 1fr); text-align: center; font-family: var(--font-mono); font-weight: bold; font-size: 1.1em;"></div>
+                <button class="btn-confirm" onclick="app.toggleSection('saves', false)">✅ Confirmar Salvaciones</button>
             </div>
-            <div id="saves_display" style="margin-top: 15px; border-top: 2px double var(--ink-main); padding-top: 10px; display: grid; grid-template-columns: repeat(6, 1fr); text-align: center; font-family: var(--font-mono); font-weight: bold; font-size: 1.1em;"></div>
+            <div id="saves_summary_view" class="summary-view" style="display:none;">
+                <div id="saves_summary_text" class="summary-text" style="font-size:0.9em; display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
+                <button class="btn-edit" onclick="app.toggleSection('saves', true)">✏️ Modificar</button>
+            </div>
         </div>
 
         <div class="section">
             <h2>IV. Habilidades y Maestría</h2>
-            
             <div id="skills_edit_view">
                 <div class="grid-2">
                     <div>
@@ -216,13 +273,13 @@
                         <div id="skills_bg" class="skill-area"></div>
                     </div>
                 </div>
-                <button class="btn-confirm" onclick="app.toggleSkillsEdit(false)">✅ Confirmar Selección</button>
+                <button class="btn-confirm" onclick="app.toggleSection('skills', false)">✅ Confirmar Selección</button>
             </div>
 
             <div id="skills_summary_view" style="display:none;">
-                <label style="text-align:center;">MAESTRÍAS FINALES</label>
-                <div id="final_skills_list"></div>
-                <button class="btn-edit" onclick="app.toggleSkillsEdit(true)">✏️ Modificar Habilidades</button>
+                <label style="text-align:center; margin-bottom:10px;">MAESTRÍAS FINALES</label>
+                <div id="final_skills_list" style="text-align:center; line-height:1.6;"></div>
+                <button class="btn-edit" onclick="app.toggleSection('skills', true)">✏️ Modificar Habilidades</button>
             </div>
         </div>
 
@@ -233,38 +290,48 @@
                 <div style="text-align:right; margin-top:5px; font-family:var(--font-mono);">
                     Seleccionados: <span id="talent_count">0</span>/3
                 </div>
+                <button class="btn-confirm" onclick="app.toggleSection('talents', false)">✅ Confirmar Talentos</button>
             </div>
-            <div id="talents_summary_view" style="display:none;">
-                <label style="text-align:center; color:var(--ink-red);">TALENTOS ACTIVOS</label>
+            <div id="talents_summary_view" class="summary-view" style="display:none;">
+                <label style="text-align:center; color:var(--ink-red); margin-bottom:10px;">TALENTOS ACTIVOS</label>
                 <div id="talents_summary_list"></div>
-                <button class="btn-edit" onclick="app.toggleTalentsEdit(true)">✏️ Modificar Talentos</button>
+                <button class="btn-edit" onclick="app.toggleSection('talents', true)">✏️ Modificar Talentos</button>
             </div>
         </div>
 
         <div class="section">
             <h2>VI. Equipo de Combate</h2>
-            <div class="grid-2">
-                <div>
-                    <label>Armadura</label>
-                    <select id="sel_armor" onchange="app.calc()"></select>
-                    <div id="armor_info" class="bonus-desc"></div>
-                </div>
-                <div>
-                    <label>Escudo & Extras</label>
-                    <select id="sel_shield" onchange="app.calc()"></select>
-                    <div style="margin-top:10px;">
-                        <label class="skill-opt" style="font-size:0.9em; color:var(--ink-accent);">
-                            <input type="checkbox" id="chk_magic_ac" onchange="app.calc()"> Bono Mágico (+1 CA)
-                        </label>
+            <div id="combat_edit_view">
+                <div class="grid-2">
+                    <div>
+                        <label>Armadura</label>
+                        <select id="sel_armor" onchange="app.calc()"></select>
+                        <div id="armor_info" class="bonus-desc"></div>
+                    </div>
+                    <div>
+                        <label>Escudo & Extras</label>
+                        <select id="sel_shield" onchange="app.calc()"></select>
+                        <div style="margin-top:10px;">
+                            <label class="skill-opt" style="font-size:0.9em; color:var(--ink-accent);">
+                                <input type="checkbox" id="chk_magic_ac" onchange="app.calc()"> Bono Mágico (+1 CA)
+                            </label>
+                        </div>
                     </div>
                 </div>
+                <label style="margin-top:15px;">Arma Principal</label>
+                <select id="sel_weapon" onchange="app.calc()"></select>
+                <div style="margin-top: 20px; text-align: center; border: 2px solid var(--ink-main); padding: 10px;">
+                    <label style="margin:0; font-size:0.9em;">ESTADÍSTICAS</label>
+                    <p id="weapon_info"></p>
+                    <div id="prof_alert" style="color:var(--ink-red); font-size:0.85em; margin-top:5px; font-weight:bold;"></div>
+                </div>
+                <button class="btn-confirm" onclick="app.toggleSection('combat', false)">✅ Confirmar Equipo</button>
             </div>
-            <label style="margin-top:10px;">Arma Principal</label>
-            <select id="sel_weapon" onchange="app.calc()"></select>
-            <div style="margin-top: 15px; text-align: center; border: 2px solid var(--ink-main); padding: 10px;">
-                <label style="margin:0;">ESTADÍSTICAS DE COMBATE</label>
-                <p id="weapon_info" style="font-size: 1.3em; font-family: var(--font-mono); margin: 5px 0 0 0; color: var(--ink-main);"></p>
-                <div id="prof_alert" style="color:var(--ink-red); font-size:0.8em; margin-top:5px; font-weight:bold;"></div>
+            
+            <div id="combat_summary_view" class="summary-view" style="display:none;">
+                <div id="combat_summary_text" class="summary-text"></div>
+                <div id="combat_summary_stats" style="text-align:center; margin-top:10px; font-family:var(--font-mono); font-weight:bold; color:var(--ink-red);"></div>
+                <button class="btn-edit" onclick="app.toggleSection('combat', true)">✏️ Modificar</button>
             </div>
         </div>
     </main>
@@ -279,530 +346,191 @@
 </dialog>
 
 <script>
+// --- DB (Idéntica) ---
 const DB = {
-    descriptors: {
-        "humano": { name: "Humano", bonus: "+1 a Dos", mods:{}, grant: [], txt: "Versátil, Ambición." },
-        "enano": { name: "Enano", bonus: "+2 CON, +1 FUE", mods:{CON:2, FUE:1}, grant: [], txt: "Robusto, Visión Oscuridad." },
-        "elfo": { name: "Elfo", bonus: "+2 DES, +1 SAB", mods:{DES:2, SAB:1}, grant: ["Proeza Física"], txt: "Inmune Encanto, Grado 1 Proeza Física." },
-        "medio_elfo": { name: "Medio Elfo", bonus: "+1 a Dos", mods:{}, grant: ["Perspicacia", "Influencia"], txt: "Visión Oscuridad, Empatía Experta." },
-        "infernal": { name: "Infernal", bonus: "+2 CAR, +1 INT", mods:{CAR:2, INT:1}, grant: [], txt: "Resistencia Fuego, Visión Oscuridad." },
-        "sintetico": { name: "Sintético", bonus: "+2 CON", mods:{CON:2}, grant: [], txt: "Inmune Veneno, No duerme." },
-        "aesir": { name: "Aesir", bonus: "+2 CAR, +1 SAB", mods:{CAR:2, SAB:1}, grant: [], txt: "Resistencia Radiante." },
-        "mutante": { name: "Mutante", bonus: "+2 Elige, +1 CON", mods:{CON:1}, grant: [], txt: "Inmune Tóxico, Rasgo Aberrante." },
-        "medio_orco": { name: "Medio Orco", bonus: "+2 FUE, +1 CON", mods:{FUE:2, CON:1}, grant: [], txt: "Implacable (1 PV al caer)." },
-        "draconido": { name: "Dracónido", bonus: "+2 FUE, +1 CAR", mods:{FUE:2, CAR:1}, grant: [], txt: "Resistencia Elemental, Presencia." },
-        "cambiante": { name: "Cambiante", bonus: "+2 FUE/DES, +1 CON", mods:{FUE:2, CON:1}, grant: ["Supervivencia"], txt: "Garras Naturales, Instinto." }
-    },
-    archetypes: {
-        "valor": { name: "Audaz (Luchador)", pv: 8, adr: 6, ing: 2, ca: 1, limit: 2, skills: ["Proeza Física", "Intimidación", "Percepción", "Supervivencia"], edges: ["Físico", "Mental"], txt: "Competencia Total. Ignora requisitos. +1 CA." },
-        "gracia": { name: "Sutil (Experto)", pv: 6, adr: 4, ing: 4, ca: 0, limit: 2, skills: ["Sigilo", "Engaño", "Investigación", "Percepción", "Proeza Física", "Tecnología"], edges: ["Físico", "Mental", "Flexible"], txt: "Comp. Simple + Sutil. Ignora req en Sutiles." },
-        "espiritu": { name: "Sagaz (Adepto)", pv: 4, adr: 0, ing: 10, ca: 0, limit: 4, skills: ["Arcano", "Historia", "Medicina", "Naturaleza", "Perspicacia", "Investigación", "Religión"], edges: ["Mental", "Físico"], txt: "Comp. Simple solamente. Debe cumplir requisitos." }
-    },
-    backgrounds: {
-        "soldado": { name: "Soldado", skills: ["Proeza Física", "Intimidación", "Perspicacia", "Tecnología", "Supervivencia", "Medicina"] },
-        "picaro": { name: "Pícaro", skills: ["Sigilo", "Engaño", "Influencia", "Conocimiento Calle", "Percepción", "Tecnología"] },
-        "acolito": { name: "Acólito", skills: ["Religión", "Perspicacia", "Influencia", "Medicina", "Historia", "Investigación"] },
-        "erudito": { name: "Erudito", skills: ["Arcano", "Historia", "Investigación", "Naturaleza", "Tecnología", "Medicina"] },
-        "salvaje": { name: "Salvaje", skills: ["Supervivencia", "Percepción", "Naturaleza", "Sigilo", "Proeza Física", "Medicina"] },
-        "artesano": { name: "Artesano", skills: ["Investigación", "Artesanía", "Influencia", "Tecnología", "Historia", "Percepción"] },
-        "forastero": { name: "Forastero", skills: ["Supervivencia", "Sigilo", "Engaño", "Perspicacia", "Conocimiento Calle", "Percepción"] },
-        "noble": { name: "Noble", skills: ["Influencia", "Historia", "Engaño", "Perspicacia", "Religión", "Investigación"] },
-        "mercenario": { name: "Mercenario", skills: ["Intimidación", "Percepción", "Supervivencia", "Engaño", "Proeza Física", "Influencia"] },
-        "marinero": { name: "Marinero", skills: ["Proeza Física", "Percepción", "Supervivencia", "Engaño", "Tecnología", "Naturaleza"] },
-        "gladiador": { name: "Gladiador", skills: ["Intimidación", "Proeza Física", "Influencia", "Percepción", "Engaño", "Supervivencia"] },
-        "mercader": { name: "Mercader", skills: ["Influencia", "Investigación", "Engaño", "Perspicacia", "Conocimiento Calle", "Historia"] },
-        "superviviente": { name: "Superviviente", skills: ["Supervivencia", "Proeza Física", "Percepción", "Medicina", "Sigilo", "Naturaleza"] }
-    },
-    talents: {
-        "acero": [
-            { name: "Lancero Marcial", desc: "Ataque oportunidad al entrar." },
-            { name: "Maestro del Escudo", desc: "Reacción para golpear/bloquear." },
-            { name: "Tirador Preciso", desc: "Ignora cobertura, gasta Adr para daño." },
-            { name: "Duelista", desc: "Desventaja a enemigo o Riposte." },
-            { name: "Escuela Combate", desc: "+1 CA o +2 Daño." }
-        ],
-        "adrenalina": [
-            { name: "Furia Primal", desc: "+2 Daño, resiste miedo." },
-            { name: "Defensa Natural", desc: "CA = 10+DES+CON (Sin armadura).", id:"def_nat" },
-            { name: "Carga Demoledora", desc: "Derriba al moverte." },
-            { name: "Resistente", desc: "Recupera max PV al descansar." }
-        ],
-        "astucia": [
-            { name: "Ataque Furtivo", desc: "+1d6 daño con ventaja." },
-            { name: "Marca de Cacería", desc: "Rastrear y +1d6 daño." },
-            { name: "Mov. Silencioso", desc: "Sigilo vel normal." },
-            { name: "Herramientas", desc: "Usar objeto acción gratis." }
-        ],
-        "fuente": [
-            { name: "Despertar", desc: "+6 Ingenio, Trucos y Poderes.", id:"despertar" },
-            { name: "Pacto", desc: "Beneficios de patrón." },
-            { name: "Canalizar", desc: "Gasta Ingenio para efectos." }
-        ],
-        "general": [
-            { name: "Alerta", desc: "+5 Iniciativa.", id:"alerta" },
-            { name: "Atleta", desc: "+1 FUE o DES.", id:"atleta" }
-        ]
-    },
-    armors: {
-        "none": { name: "Ropa (Sin Armadura)", ca: 10, type: "none", slots: 0 },
-        "cuero": { name: "Cuero (Ligera)", ca: 11, type: "light", slots: 1 },
-        "tachonado": { name: "Cuero Tachonado", ca: 12, type: "light", slots: 1 },
-        "pieles": { name: "Pieles (Media)", ca: 12, type: "medium", slots: 2 },
-        "coraza": { name: "Coraza (Media)", ca: 14, type: "medium", slots: 2 },
-        "malla": { name: "Cota de Malla (P)", ca: 16, type: "heavy", slots: 3 },
-        "placas": { name: "Placas (P)", ca: 18, type: "heavy", slots: 4 }
-    },
-    shields: {
-        "none": { name: "Sin Escudo", bonus: 0, slots: 0 },
-        "rodela": { name: "Rodela (+1 CA)", bonus: 1, slots: 0 },
-        "escudo": { name: "Escudo (+2 CA)", bonus: 2, slots: 1 },
-        "torre": { name: "Escudo Torre (+3 CA)", bonus: 3, slots: 2 }
-    },
-    weapons: {
-        "desarmado": { name: "Desarmado", dmg: "1d4", stat: "FUE", slots: 0, cat: "simple", prop: "sutil", req: 0 },
-        "daga": { name: "Daga", dmg: "1d4", stat: "FIN", slots: 1, cat: "simple", prop: "sutil", req: 0 },
-        "baston": { name: "Bastón", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "versatil", req: 0 },
-        "martillo_l": { name: "Martillo Ligero", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "arrojadiza", req: 0 },
-        "ballesta": { name: "Ballesta Ligera", dmg: "1d8", stat: "DES", slots: 2, cat: "simple", prop: "distancia", req: 0 },
-        "espada_c": { name: "Espada Corta", dmg: "1d6", stat: "FIN", slots: 1, cat: "marcial", prop: "sutil", req: 0 },
-        "espada_l": { name: "Espada Larga", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
-        "hacha": { name: "Hacha Batalla", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
-        "martillo_g": { name: "Martillo Guerra", dmg: "1d8/10", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
-        "espadon": { name: "Espadón", dmg: "2d6", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 },
-        "gran_hacha": { name: "Gran Hacha", dmg: "1d12", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 },
-        "arco_c": { name: "Arco Corto", dmg: "1d6", stat: "DES", slots: 2, cat: "marcial", prop: "distancia", req: 0 },
-        "arco_l": { name: "Arco Largo", dmg: "1d8", stat: "DES", slots: 3, cat: "marcial", prop: "distancia", req: 11 }
-    }
+    descriptors: { "humano": { name: "Humano", bonus: "+1 a Dos", mods:{}, grant: [], txt: "Versátil, Ambición." }, "enano": { name: "Enano", bonus: "+2 CON, +1 FUE", mods:{CON:2, FUE:1}, grant: [], txt: "Robusto, Visión Oscuridad." }, "elfo": { name: "Elfo", bonus: "+2 DES, +1 SAB", mods:{DES:2, SAB:1}, grant: ["Proeza Física"], txt: "Inmune Encanto, Grado 1 Proeza Física." }, "medio_elfo": { name: "Medio Elfo", bonus: "+1 a Dos", mods:{}, grant: ["Perspicacia", "Influencia"], txt: "Visión Oscuridad, Empatía Experta." }, "infernal": { name: "Infernal", bonus: "+2 CAR, +1 INT", mods:{CAR:2, INT:1}, grant: [], txt: "Resistencia Fuego, Visión Oscuridad." }, "sintetico": { name: "Sintético", bonus: "+2 CON", mods:{CON:2}, grant: [], txt: "Inmune Veneno, No duerme." }, "aesir": { name: "Aesir", bonus: "+2 CAR, +1 SAB", mods:{CAR:2, SAB:1}, grant: [], txt: "Resistencia Radiante." }, "mutante": { name: "Mutante", bonus: "+2 Elige, +1 CON", mods:{CON:1}, grant: [], txt: "Inmune Tóxico, Rasgo Aberrante." }, "medio_orco": { name: "Medio Orco", bonus: "+2 FUE, +1 CON", mods:{FUE:2, CON:1}, grant: [], txt: "Implacable (1 PV al caer)." }, "draconido": { name: "Dracónido", bonus: "+2 FUE, +1 CAR", mods:{FUE:2, CAR:1}, grant: [], txt: "Resistencia Elemental, Presencia." }, "cambiante": { name: "Cambiante", bonus: "+2 FUE/DES, +1 CON", mods:{FUE:2, CON:1}, grant: ["Supervivencia"], txt: "Garras Naturales, Instinto." } },
+    archetypes: { "valor": { name: "Audaz (Luchador)", pv: 8, adr: 6, ing: 2, ca: 1, limit: 2, skills: ["Proeza Física", "Intimidación", "Percepción", "Supervivencia"], edges: ["Físico", "Mental"], txt: "Competencia Total. Ignora requisitos. +1 CA." }, "gracia": { name: "Sutil (Experto)", pv: 6, adr: 4, ing: 4, ca: 0, limit: 2, skills: ["Sigilo", "Engaño", "Investigación", "Percepción", "Proeza Física", "Tecnología"], edges: ["Físico", "Mental", "Flexible"], txt: "Comp. Simple + Sutil. Ignora req en Sutiles." }, "espiritu": { name: "Sagaz (Adepto)", pv: 4, adr: 0, ing: 10, ca: 0, limit: 4, skills: ["Arcano", "Historia", "Medicina", "Naturaleza", "Perspicacia", "Investigación", "Religión"], edges: ["Mental", "Físico"], txt: "Comp. Simple solamente. Debe cumplir requisitos." } },
+    backgrounds: { "soldado": { name: "Soldado", skills: ["Proeza Física", "Intimidación", "Perspicacia", "Tecnología", "Supervivencia", "Medicina"] }, "picaro": { name: "Pícaro", skills: ["Sigilo", "Engaño", "Influencia", "Conocimiento Calle", "Percepción", "Tecnología"] }, "acolito": { name: "Acólito", skills: ["Religión", "Perspicacia", "Influencia", "Medicina", "Historia", "Investigación"] }, "erudito": { name: "Erudito", skills: ["Arcano", "Historia", "Investigación", "Naturaleza", "Tecnología", "Medicina"] }, "salvaje": { name: "Salvaje", skills: ["Supervivencia", "Percepción", "Naturaleza", "Sigilo", "Proeza Física", "Medicina"] }, "artesano": { name: "Artesano", skills: ["Investigación", "Artesanía", "Influencia", "Tecnología", "Historia", "Percepción"] }, "forastero": { name: "Forastero", skills: ["Supervivencia", "Sigilo", "Engaño", "Perspicacia", "Conocimiento Calle", "Percepción"] }, "noble": { name: "Noble", skills: ["Influencia", "Historia", "Engaño", "Perspicacia", "Religión", "Investigación"] }, "mercenario": { name: "Mercenario", skills: ["Intimidación", "Percepción", "Supervivencia", "Engaño", "Proeza Física", "Influencia"] }, "marinero": { name: "Marinero", skills: ["Proeza Física", "Percepción", "Supervivencia", "Engaño", "Tecnología", "Naturaleza"] }, "gladiador": { name: "Gladiador", skills: ["Intimidación", "Proeza Física", "Influencia", "Percepción", "Engaño", "Supervivencia"] }, "mercader": { name: "Mercader", skills: ["Influencia", "Investigación", "Engaño", "Perspicacia", "Conocimiento Calle", "Historia"] }, "superviviente": { name: "Superviviente", skills: ["Supervivencia", "Proeza Física", "Percepción", "Medicina", "Sigilo", "Naturaleza"] } },
+    talents: { "acero": [ { name: "Lancero Marcial", desc: "Ataque oportunidad al entrar." }, { name: "Maestro del Escudo", desc: "Reacción para golpear/bloquear." }, { name: "Tirador Preciso", desc: "Ignora cobertura, gasta Adr para daño." }, { name: "Duelista", desc: "Desventaja a enemigo o Riposte." }, { name: "Escuela Combate", desc: "+1 CA o +2 Daño." } ], "adrenalina": [ { name: "Furia Primal", desc: "+2 Daño, resiste miedo." }, { name: "Defensa Natural", desc: "CA = 10+DES+CON (Sin armadura).", id:"def_nat" }, { name: "Carga Demoledora", desc: "Derriba al moverte." }, { name: "Resistente", desc: "Recupera max PV al descansar." } ], "astucia": [ { name: "Ataque Furtivo", desc: "+1d6 daño con ventaja." }, { name: "Marca de Cacería", desc: "Rastrear y +1d6 daño." }, { name: "Mov. Silencioso", desc: "Sigilo vel normal." }, { name: "Herramientas", desc: "Usar objeto acción gratis." } ], "fuente": [ { name: "Despertar", desc: "+6 Ingenio, Trucos y Poderes.", id:"despertar" }, { name: "Pacto", desc: "Beneficios de patrón." }, { name: "Canalizar", desc: "Gasta Ingenio para efectos." } ], "general": [ { name: "Alerta", desc: "+5 Iniciativa.", id:"alerta" }, { name: "Atleta", desc: "+1 FUE o DES.", id:"atleta" } ] },
+    armors: { "none": { name: "Ropa (Sin Armadura)", ca: 10, type: "none", slots: 0 }, "cuero": { name: "Cuero (Ligera)", ca: 11, type: "light", slots: 1 }, "tachonado": { name: "Cuero Tachonado", ca: 12, type: "light", slots: 1 }, "pieles": { name: "Pieles (Media)", ca: 12, type: "medium", slots: 2 }, "coraza": { name: "Coraza (Media)", ca: 14, type: "medium", slots: 2 }, "malla": { name: "Cota de Malla (P)", ca: 16, type: "heavy", slots: 3 }, "placas": { name: "Placas (P)", ca: 18, type: "heavy", slots: 4 } },
+    shields: { "none": { name: "Sin Escudo", bonus: 0, slots: 0 }, "rodela": { name: "Rodela (+1 CA)", bonus: 1, slots: 0 }, "escudo": { name: "Escudo (+2 CA)", bonus: 2, slots: 1 }, "torre": { name: "Escudo Torre (+3 CA)", bonus: 3, slots: 2 } },
+    weapons: { "desarmado": { name: "Desarmado", dmg: "1d4", stat: "FUE", slots: 0, cat: "simple", prop: "sutil", req: 0 }, "daga": { name: "Daga", dmg: "1d4", stat: "FIN", slots: 1, cat: "simple", prop: "sutil", req: 0 }, "baston": { name: "Bastón", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "versatil", req: 0 }, "martillo_l": { name: "Martillo Ligero", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "arrojadiza", req: 0 }, "ballesta": { name: "Ballesta Ligera", dmg: "1d8", stat: "DES", slots: 2, cat: "simple", prop: "distancia", req: 0 }, "espada_c": { name: "Espada Corta", dmg: "1d6", stat: "FIN", slots: 1, cat: "marcial", prop: "sutil", req: 0 }, "espada_l": { name: "Espada Larga", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 }, "hacha": { name: "Hacha Batalla", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 }, "martillo_g": { name: "Martillo Guerra", dmg: "1d8/10", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 }, "espadon": { name: "Espadón", dmg: "2d6", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 }, "gran_hacha": { name: "Gran Hacha", dmg: "1d12", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 }, "arco_c": { name: "Arco Corto", dmg: "1d6", stat: "DES", slots: 2, cat: "marcial", prop: "distancia", req: 0 }, "arco_l": { name: "Arco Largo", dmg: "1d8", stat: "DES", slots: 3, cat: "marcial", prop: "distancia", req: 11 } }
 };
 
 const app = {
     init: function() {
-        this.fillSelect('sel_desc', DB.descriptors);
-        this.fillSelect('sel_arq', DB.archetypes);
-        this.fillSelect('sel_bg', DB.backgrounds);
-        this.fillSelect('sel_armor', DB.armors);
-        this.fillSelect('sel_weapon', DB.weapons);
-        this.fillSelect('sel_shield', DB.shields);
-        this.renderTalents();
-        this.updateOptions(true);
+        this.fillSelect('sel_desc', DB.descriptors); this.fillSelect('sel_arq', DB.archetypes); this.fillSelect('sel_bg', DB.backgrounds);
+        this.fillSelect('sel_armor', DB.armors); this.fillSelect('sel_weapon', DB.weapons); this.fillSelect('sel_shield', DB.shields);
+        this.renderTalents(); this.updateOptions(true);
     },
-    
-    fillSelect: function(id, data) {
-        const s = document.getElementById(id);
-        s.innerHTML = "";
-        for(let k in data) {
-            let o = document.createElement('option');
-            o.value = k;
-            o.innerText = data[k].name;
-            s.appendChild(o);
-        }
-    },
-    
-    loadImage: function(input) {
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 500; const MAX_HEIGHT = 750;
-                    let width = img.width; let height = img.height;
-                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
-                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                    canvas.width = width; canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    document.getElementById('char_img').src = canvas.toDataURL('image/jpeg', 0.7);
-                }
-                img.src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        }
-    },
-
-    updateOptions: function(resetCheckboxes = false) {
-        const arqKey = document.getElementById('sel_arq').value;
-        const bgKey = document.getElementById('sel_bg').value;
-        const descKey = document.getElementById('sel_desc').value;
-
+    fillSelect: function(id, data) { const s = document.getElementById(id); s.innerHTML = ""; for(let k in data) { let o = document.createElement('option'); o.value = k; o.innerText = data[k].name; s.appendChild(o); } },
+    loadImage: function(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { const img = new Image(); img.onload = function() { const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); const MAX_WIDTH = 500; const MAX_HEIGHT = 750; let width = img.width; let height = img.height; if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } } canvas.width = width; canvas.height = height; ctx.drawImage(img, 0, 0, width, height); document.getElementById('char_img').src = canvas.toDataURL('image/jpeg', 0.7); }; img.src = e.target.result; }; reader.readAsDataURL(input.files[0]); } },
+    updateOptions: function() {
+        const arqKey = document.getElementById('sel_arq').value; const bgKey = document.getElementById('sel_bg').value; const descKey = document.getElementById('sel_desc').value;
         document.getElementById('desc_info').innerText = DB.descriptors[descKey].bonus + ". " + DB.descriptors[descKey].txt;
-        document.getElementById('arq_info').innerText = DB.archetypes[arqKey].txt;
-        document.getElementById('bg_info').innerText = "Otorga 2 Habilidades y Kit.";
-
-        const filoSelect = document.getElementById('sel_filo');
-        const availableEdges = DB.archetypes[arqKey].edges;
-        const currentEdge = filoSelect.value;
-        filoSelect.innerHTML = "";
-        availableEdges.forEach(edge => {
-            let opt = document.createElement('option');
-            opt.value = edge; opt.innerText = edge;
-            filoSelect.appendChild(opt);
-        });
+        document.getElementById('arq_info').innerText = DB.archetypes[arqKey].txt; document.getElementById('bg_info').innerText = "Otorga 2 Habilidades y Kit.";
+        const filoSelect = document.getElementById('sel_filo'); const availableEdges = DB.archetypes[arqKey].edges; const currentEdge = filoSelect.value; filoSelect.innerHTML = "";
+        availableEdges.forEach(edge => { let opt = document.createElement('option'); opt.value = edge; opt.innerText = edge; filoSelect.appendChild(opt); });
         if(availableEdges.includes(currentEdge)) filoSelect.value = currentEdge;
-
         this.renderCheckboxes('skills_arq', 'chk_arq', DB.archetypes[arqKey].skills, DB.archetypes[arqKey].limit);
         this.renderCheckboxes('skills_bg', 'chk_bg', DB.backgrounds[bgKey].skills, 2);
-        
         document.getElementById('limit_arq').innerText = DB.archetypes[arqKey].limit;
         this.calc();
     },
-
     renderCheckboxes: function(containerId, name, skills, limit) {
-        const div = document.getElementById(containerId);
-        div.innerHTML = "";
-        skills.forEach(s => {
-            const lbl = document.createElement('label');
-            lbl.className = 'skill-opt';
-            lbl.innerHTML = `<input type="checkbox" name="${name}" value="${s}" onchange="app.checkLimit('${name}', ${limit}); app.calc()"> ${s}`;
-            div.appendChild(lbl);
-        });
+        const div = document.getElementById(containerId); div.innerHTML = "";
+        skills.forEach(s => { const lbl = document.createElement('label'); lbl.className = 'skill-opt'; lbl.innerHTML = `<input type="checkbox" name="${name}" value="${s}" onchange="app.checkLimit('${name}', ${limit}); app.calc()"> ${s}`; div.appendChild(lbl); });
     },
-
     renderTalents: function() {
-        const container = document.getElementById('talents_container');
-        container.innerHTML = "";
+        const container = document.getElementById('talents_container'); container.innerHTML = "";
         for (let cat in DB.talents) {
-            let col = document.createElement('div');
-            col.innerHTML = `<h3 style="margin:0 0 5px 0; color:var(--ink-accent); border:none; text-decoration:none; font-size:1em;">${cat.toUpperCase()}</h3>`;
-            DB.talents[cat].forEach(t => {
-                let lbl = document.createElement('label');
-                lbl.className = 'skill-opt';
-                let extraAttr = t.id ? `data-id="${t.id}"` : "";
-                lbl.innerHTML = `<input type="checkbox" name="chk_talents" value="${t.name}" ${extraAttr} data-desc="${t.desc}" onchange="app.checkTalentLimit()"> 
-                                 <span style="font-weight:bold">${t.name}</span> <span style="font-size:0.8em; color:#555;">${t.desc}</span>`;
-                col.appendChild(lbl);
-            });
-            container.appendChild(col);
+            let col = document.createElement('div'); col.innerHTML = `<h3 style="margin:0 0 5px 0; color:var(--ink-accent); border:none; text-decoration:none; font-size:1em;">${cat.toUpperCase()}</h3>`;
+            DB.talents[cat].forEach(t => { let lbl = document.createElement('label'); lbl.className = 'skill-opt'; let extraAttr = t.id ? `data-id="${t.id}"` : ""; lbl.innerHTML = `<input type="checkbox" name="chk_talents" value="${t.name}" ${extraAttr} data-desc="${t.desc}" onchange="app.checkTalentLimit()"> <span style="font-weight:bold">${t.name}</span> <span style="font-size:0.8em; color:#555;">${t.desc}</span>`; col.appendChild(lbl); }); container.appendChild(col);
         }
     },
-
-    checkLimit: function(name, limit) {
-        const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
-        if(checked.length > limit) {
-            alert(`Solo puedes elegir ${limit}.`);
-            event.target.checked = false;
-        }
-    },
-
-    // --- NUEVA LÓGICA DE COLAPSABLES ---
-    checkTalentLimit: function() {
-        const checked = document.querySelectorAll('input[name="chk_talents"]:checked');
-        document.getElementById('talent_count').innerText = checked.length;
-        if(checked.length >= 3) {
-            if(checked.length > 3) {
-                alert("Solo puedes elegir 3.");
-                event.target.checked = false;
-                return;
-            }
-            this.showTalentSummary();
-        }
-        this.calc();
-    },
-
+    checkLimit: function(name, limit) { const checked = document.querySelectorAll(`input[name="${name}"]:checked`); if(checked.length > limit) { alert(`Solo puedes elegir ${limit}.`); event.target.checked = false; } },
+    checkTalentLimit: function() { const checked = document.querySelectorAll('input[name="chk_talents"]:checked'); document.getElementById('talent_count').innerText = checked.length; if(checked.length >= 3) { if(checked.length > 3) { alert("Solo puedes elegir 3."); event.target.checked = false; return; } } this.calc(); },
     showTalentSummary: function() {
-        const checked = Array.from(document.querySelectorAll('input[name="chk_talents"]:checked'));
-        const listDiv = document.getElementById('talents_summary_list');
-        listDiv.innerHTML = "";
-        checked.forEach(chk => {
-            const div = document.createElement('div');
-            div.className = 'talent-final-item';
-            div.innerHTML = `<strong>${chk.value}</strong><br><i style="font-size:0.9em; color:#555;">${chk.getAttribute('data-desc')}</i>`;
-            listDiv.appendChild(div);
-        });
-        document.getElementById('talents_edit_view').style.display = 'none';
-        document.getElementById('talents_summary_view').style.display = 'block';
+        const checked = Array.from(document.querySelectorAll('input[name="chk_talents"]:checked')); const listDiv = document.getElementById('talents_summary_list'); listDiv.innerHTML = "";
+        checked.forEach(chk => { const div = document.createElement('div'); div.className = 'talent-final-item'; div.innerHTML = `<strong>${chk.value}</strong><br><i style="font-size:0.9em; color:#555;">${chk.getAttribute('data-desc')}</i>`; listDiv.appendChild(div); });
+        this.toggleSection('talents', false);
     },
-
-    toggleTalentsEdit: function(showEdit) {
-        document.getElementById('talents_edit_view').style.display = showEdit ? 'block' : 'none';
-        document.getElementById('talents_summary_view').style.display = showEdit ? 'none' : 'block';
-    },
-
-    toggleSkillsEdit: function(showEdit) {
-        document.getElementById('skills_edit_view').style.display = showEdit ? 'block' : 'none';
-        document.getElementById('skills_summary_view').style.display = showEdit ? 'none' : 'block';
-    },
-
-    getMod: function(val) {
-        if(val <= 3) return -3;
-        if(val <= 6) return -2;
-        if(val <= 9) return -1;
-        if(val <= 12) return 0;
-        if(val <= 14) return 1;
-        if(val <= 16) return 2;
-        return 3;
-    },
+    toggleSection: function(section, showEdit) { document.getElementById(`${section}_edit_view`).style.display = showEdit ? 'block' : 'none'; document.getElementById(`${section}_summary_view`).style.display = showEdit ? 'none' : 'block'; },
+    getMod: function(val) { if(val <= 3) return -3; if(val <= 6) return -2; if(val <= 9) return -1; if(val <= 12) return 0; if(val <= 14) return 1; if(val <= 16) return 2; return 3; },
 
     calc: function() {
-        const stats = {
-            FUE: parseInt(document.getElementById('base_FUE').value)||8,
-            DES: parseInt(document.getElementById('base_DES').value)||8,
-            CON: parseInt(document.getElementById('base_CON').value)||8,
-            INT: parseInt(document.getElementById('base_INT').value)||8,
-            SAB: parseInt(document.getElementById('base_SAB').value)||8,
-            CAR: parseInt(document.getElementById('base_CAR').value)||8
-        };
-        const descData = DB.descriptors[document.getElementById('sel_desc').value];
-        for(let k in descData.mods) stats[k] += descData.mods[k];
-        
+        const stats = { FUE: parseInt(document.getElementById('base_FUE').value)||8, DES: parseInt(document.getElementById('base_DES').value)||8, CON: parseInt(document.getElementById('base_CON').value)||8, INT: parseInt(document.getElementById('base_INT').value)||8, SAB: parseInt(document.getElementById('base_SAB').value)||8, CAR: parseInt(document.getElementById('base_CAR').value)||8 };
+        const descData = DB.descriptors[document.getElementById('sel_desc').value]; for(let k in descData.mods) stats[k] += descData.mods[k];
         if(document.querySelector('input[data-id="atleta"]:checked')) stats.DES += 1;
+        let statHTML = "", summaryHTML = "";
+        for(let k in stats) { let mod = this.getMod(stats[k]); let display = `${k}: <b>${stats[k]}</b> (${mod>=0?'+':''}${mod})`; statHTML += `<span style="margin:0 10px">${display}</span>`; summaryHTML += `<span style="margin:0 8px; display:inline-block;">${display}</span>`; }
+        document.getElementById('stats_final_display').innerHTML = statHTML; document.getElementById('stats_summary_text').innerHTML = summaryHTML;
 
-        let statHTML = "";
-        for(let k in stats) {
-            let mod = this.getMod(stats[k]);
-            statHTML += `<span style="margin:0 10px">${k}: <b>${stats[k]}</b> (${mod>=0?'+':''}${mod})</span>`;
-        }
-        document.getElementById('stats_final_display').innerHTML = statHTML;
-        
-        const profBonus = 2;
-        const selCommon = document.querySelector('input[name="save_common"]:checked')?.value;
-        const selUncommon = document.querySelector('input[name="save_uncommon"]:checked')?.value;
-        let savesHTML = "";
-        const statOrder = ["FUE", "DES", "CON", "INT", "SAB", "CAR"];
-        statOrder.forEach(stat => {
-            let baseMod = this.getMod(stats[stat]);
-            let isProf = (stat === selCommon || stat === selUncommon);
-            let total = baseMod + (isProf ? profBonus : 0);
-            let style = isProf ? "color:var(--ink-red); text-decoration:underline;" : "color:var(--ink-main);";
+        // Saves
+        const profBonus = 2; const selCommon = document.querySelector('input[name="save_common"]:checked')?.value; const selUncommon = document.querySelector('input[name="save_uncommon"]:checked')?.value;
+        let savesHTML = "", savesSummary = "";
+        ["FUE", "DES", "CON", "INT", "SAB", "CAR"].forEach(stat => {
+            let baseMod = this.getMod(stats[stat]); let isProf = (stat === selCommon || stat === selUncommon); let total = baseMod + (isProf ? profBonus : 0); let style = isProf ? "color:var(--ink-red); text-decoration:underline;" : "color:var(--ink-main);";
             savesHTML += `<div style="${style}"><div style="font-size:0.7em;">${stat}</div>${total>=0?'+':''}${total}</div>`;
+            if(isProf) savesSummary += `<div style="${style}"><b>${stat}:</b> ${total>=0?'+':''}${total}</div>`;
         });
         document.getElementById('saves_display').innerHTML = savesHTML;
+        document.getElementById('saves_summary_text').innerHTML = savesSummary || "Ninguna seleccionada";
 
-        // Skills logic
-        const skillCounts = {};
-        descData.grant.forEach(s => skillCounts[s] = (skillCounts[s]||0) + 1);
-        ['chk_arq', 'chk_bg'].forEach(grp => {
-            document.querySelectorAll(`input[name="${grp}"]:checked`).forEach(chk => {
-                skillCounts[chk.value] = (skillCounts[chk.value]||0) + 1;
-            });
-        });
-        const finalDiv = document.getElementById('final_skills_list');
-        finalDiv.innerHTML = "";
-        for(let s in skillCounts) {
-            let grade = skillCounts[s] >= 2 ? 1 : 0;
-            let tag = document.createElement('span');
-            tag.className = `skill-tag ${grade===1 ? 'grade-1' : ''}`;
-            tag.innerText = `${s} [G${grade}]`;
-            finalDiv.appendChild(tag);
-        }
+        // Skills
+        const skillCounts = {}; descData.grant.forEach(s => skillCounts[s] = (skillCounts[s]||0) + 1);
+        ['chk_arq', 'chk_bg'].forEach(grp => { document.querySelectorAll(`input[name="${grp}"]:checked`).forEach(chk => { skillCounts[chk.value] = (skillCounts[chk.value]||0) + 1; }); });
+        const finalDiv = document.getElementById('final_skills_list'); finalDiv.innerHTML = "";
+        for(let s in skillCounts) { let grade = skillCounts[s] >= 2 ? 1 : 0; let tag = document.createElement('span'); tag.className = `skill-tag ${grade===1 ? 'grade-1' : ''}`; tag.innerText = `${s} [G${grade}]`; finalDiv.appendChild(tag); }
 
-        const arqKey = document.getElementById('sel_arq').value;
-        const arqData = DB.archetypes[arqKey];
-        const armor = DB.armors[document.getElementById('sel_armor').value];
-        const weapon = DB.weapons[document.getElementById('sel_weapon').value];
-        const shield = DB.shields[document.getElementById('sel_shield').value];
-        
-        const pv = arqData.pv + stats.CON; 
-        const flesh = stats.CON;
-        let bonusIng = document.querySelector('input[data-id="despertar"]:checked') ? 6 : 0;
-        let bonusIni = document.querySelector('input[data-id="alerta"]:checked') ? 5 : 0;
-        const maxFis = Math.max(stats.FUE, stats.DES);
-        const maxMen = Math.max(stats.INT, stats.SAB, stats.CAR);
-        const adr = maxFis + 1 + arqData.adr;
-        const ing = maxMen + 1 + arqData.ing + bonusIng;
-        
-        let modDes = this.getMod(stats.DES);
-        let ca = armor.ca;
-        let defNatural = document.querySelector('input[data-id="def_nat"]:checked');
-        if (armor.type === 'none' && defNatural) {
-            ca = 10 + modDes + this.getMod(stats.CON);
-        } else {
-            if (armor.type === 'light' || armor.type === 'none') ca += modDes;
-            if (armor.type === 'medium') ca += Math.min(modDes, 2);
-        }
-        ca += shield.bonus;
-        ca += arqData.ca;
-        if(document.getElementById('chk_magic_ac').checked) ca += 1;
+        // Identity
+        const descName = DB.descriptors[document.getElementById('sel_desc').value].name; const arqName = DB.archetypes[document.getElementById('sel_arq').value].name; const bgName = DB.backgrounds[document.getElementById('sel_bg').value].name;
+        document.getElementById('identity_summary_text').innerHTML = `<b>${descName}</b> | <b>${arqName}</b> | <b>${bgName}</b>`;
 
-        let atkStatVal = stats.FUE;
-        if (weapon.stat === 'DES') atkStatVal = stats.DES;
-        if (weapon.stat === 'FIN') atkStatVal = Math.max(stats.FUE, stats.DES);
-        
-        let attrMod = this.getMod(atkStatVal);
-        let isProf = false;
-        let meetsReq = (weapon.req === 0) || (stats.FUE >= weapon.req || stats.DES >= weapon.req); 
+        // Combat
+        const arqKey = document.getElementById('sel_arq').value; const arqData = DB.archetypes[arqKey];
+        const armor = DB.armors[document.getElementById('sel_armor').value]; const weapon = DB.weapons[document.getElementById('sel_weapon').value]; const shield = DB.shields[document.getElementById('sel_shield').value];
+        const pv = arqData.pv + stats.CON; const flesh = stats.CON;
+        let bonusIng = document.querySelector('input[data-id="despertar"]:checked') ? 6 : 0; let bonusIni = document.querySelector('input[data-id="alerta"]:checked') ? 5 : 0;
+        const maxFis = Math.max(stats.FUE, stats.DES); const maxMen = Math.max(stats.INT, stats.SAB, stats.CAR); const adr = maxFis + 1 + arqData.adr; const ing = maxMen + 1 + arqData.ing + bonusIng;
+        let modDes = this.getMod(stats.DES); let ca = armor.ca; let defNatural = document.querySelector('input[data-id="def_nat"]:checked');
+        if (armor.type === 'none' && defNatural) { ca = 10 + modDes + this.getMod(stats.CON); } else { if (armor.type === 'light' || armor.type === 'none') ca += modDes; if (armor.type === 'medium') ca += Math.min(modDes, 2); }
+        ca += shield.bonus; ca += arqData.ca; if(document.getElementById('chk_magic_ac').checked) ca += 1;
 
-        if (arqKey === "valor") { isProf = true; meetsReq = true; } 
-        else if (arqKey === "gracia") { 
-            if (weapon.cat === "simple" || weapon.prop === "sutil") {
-                isProf = true;
-                if (weapon.prop === "sutil") meetsReq = true;
-            }
-        } else { if (weapon.cat === "simple") isProf = true; }
-
-        let totalAtk = attrMod + (isProf ? 2 : 0);
-        if(!meetsReq && isProf) totalAtk -= 2;
-
-        let maxMentalMod = Math.max(this.getMod(stats.INT), this.getMod(stats.SAB), this.getMod(stats.CAR));
-        let magicAtkMod = maxMentalMod + 2;
-
-        let dmgAttr = stats.FUE;
-        if (weapon.stat === 'DES') dmgAttr = stats.DES;
-        if (weapon.stat === 'FIN') dmgAttr = Math.max(stats.FUE, stats.DES);
-        let dmgMod = this.getMod(dmgAttr);
-        let dmgSign = dmgMod > 0 ? "+" + dmgMod : "";
-        let finalDmg = `${weapon.dmg} ${dmgSign}`;
-        
-        const cargaTotal = armor.slots + weapon.slots + shield.slots;
-        const cargaMax = stats.FUE;
+        let atkStatVal = stats.FUE; if (weapon.stat === 'DES') atkStatVal = stats.DES; if (weapon.stat === 'FIN') atkStatVal = Math.max(stats.FUE, stats.DES);
+        let attrMod = this.getMod(atkStatVal); let isProf = false; let meetsReq = (weapon.req === 0) || (stats.FUE >= weapon.req || stats.DES >= weapon.req); 
+        if (arqKey === "valor") { isProf = true; meetsReq = true; } else if (arqKey === "gracia") { if (weapon.cat === "simple" || weapon.prop === "sutil") { isProf = true; if (weapon.prop === "sutil") meetsReq = true; } } else { if (weapon.cat === "simple") isProf = true; }
+        let totalAtk = attrMod + (isProf ? 2 : 0); if(!meetsReq && isProf) totalAtk -= 2;
+        let magicAtkMod = Math.max(this.getMod(stats.INT), this.getMod(stats.SAB), this.getMod(stats.CAR)) + 2;
+        let dmgAttr = stats.FUE; if (weapon.stat === 'DES') dmgAttr = stats.DES; if (weapon.stat === 'FIN') dmgAttr = Math.max(stats.FUE, stats.DES);
+        let dmgMod = this.getMod(dmgAttr); let dmgSign = dmgMod > 0 ? "+" + dmgMod : ""; let finalDmg = `${weapon.dmg} ${dmgSign}`;
+        const cargaTotal = armor.slots + weapon.slots + shield.slots; const cargaMax = stats.FUE;
 
         document.getElementById('armor_info').innerText = `Tipo: ${armor.type.toUpperCase()} | Slots: ${armor.slots}`;
-        document.getElementById('weapon_info').innerHTML = `Ataque: <span style="color:var(--ink-red); font-weight:bold;">${totalAtk >= 0 ? '+' : ''}${totalAtk}</span> | Daño: ${finalDmg} | Slots: ${weapon.slots}`;
-        document.getElementById('prof_alert').innerText = !meetsReq ? "⚠️ Faltan requisitos" : "";
+        const combatString = `Ataque: <span style="color:var(--ink-red); font-weight:bold;">${totalAtk >= 0 ? '+' : ''}${totalAtk}</span> | Daño: ${finalDmg}`;
+        document.getElementById('weapon_info').innerHTML = combatString; document.getElementById('prof_alert').innerText = !meetsReq ? "⚠️ Faltan requisitos" : "";
+        document.getElementById('combat_summary_text').innerHTML = `<b>${armor.name}</b><br><b>${weapon.name}</b> + <b>${shield.name}</b>`; document.getElementById('combat_summary_stats').innerHTML = combatString;
 
-        document.getElementById('res_pv').innerText = pv;
-        document.getElementById('res_carne').innerText = flesh;
-        document.getElementById('res_carga').innerText = cargaTotal + " / " + cargaMax;
-        document.getElementById('res_carga').style.color = cargaTotal > cargaMax ? "var(--ink-red)" : "var(--ink-main)";
-        document.getElementById('res_adr').innerText = adr;
-        document.getElementById('res_ing').innerText = ing;
-        document.getElementById('res_ca').innerText = ca;
-        document.getElementById('res_ini').innerText = (modDes + bonusIni >= 0 ? "+" : "") + (modDes + bonusIni);
-        document.getElementById('res_atq_mag').innerText = (magicAtkMod >= 0 ? "+" : "") + magicAtkMod;
-        document.getElementById('res_filo_val').innerText = document.getElementById('sel_filo').value;
+        document.getElementById('res_pv').innerText = pv; document.getElementById('res_carne').innerText = flesh;
+        document.getElementById('res_carga').innerText = cargaTotal + " / " + cargaMax; document.getElementById('res_carga').style.color = cargaTotal > cargaMax ? "var(--ink-red)" : "var(--ink-main)";
+        document.getElementById('res_adr').innerText = adr; document.getElementById('res_ing').innerText = ing;
+        document.getElementById('res_ca').innerText = ca; document.getElementById('res_ini').innerText = (modDes + bonusIni >= 0 ? "+" : "") + (modDes + bonusIni);
+        document.getElementById('res_atq_mag').innerText = (magicAtkMod >= 0 ? "+" : "") + magicAtkMod; document.getElementById('res_filo_val').innerText = document.getElementById('sel_filo').value;
     },
 
     randomize: function() {
-        ['base_FUE','base_DES','base_CON','base_INT','base_SAB','base_CAR'].forEach(id => {
-            document.getElementById(id).value = Math.floor(Math.random()*6)+Math.floor(Math.random()*6)+Math.floor(Math.random()*6)+3;
-        });
+        ['base_FUE','base_DES','base_CON','base_INT','base_SAB','base_CAR'].forEach(id => { document.getElementById(id).value = Math.floor(Math.random()*6)+Math.floor(Math.random()*6)+Math.floor(Math.random()*6)+3; });
         const randSel = (id) => { const s = document.getElementById(id); s.selectedIndex = Math.floor(Math.random()*s.options.length); };
-        
-        randSel('sel_desc');
-        randSel('sel_arq'); 
-        randSel('sel_bg');
-        randSel('sel_shield');
-
+        randSel('sel_desc'); randSel('sel_arq'); randSel('sel_bg'); randSel('sel_shield');
         const arq = document.getElementById('sel_arq').value;
         let validArmor = arq === 'espiritu' ? ['none'] : (arq === 'gracia' ? ['none', 'light'] : ['none','light','medium','heavy']);
         const armKeys = Object.keys(DB.armors).filter(k => validArmor.includes(DB.armors[k].type));
         document.getElementById('sel_armor').value = armKeys[Math.floor(Math.random() * armKeys.length)];
-
-        let validWep = [];
-        for (let wKey in DB.weapons) {
-            let w = DB.weapons[wKey];
-            let ok = false;
-            if (arq === 'valor') ok = true;
-            else if (arq === 'gracia') { if (w.cat === 'simple' || w.prop === 'sutil') ok = true; }
-            else { if (w.cat === 'simple') ok = true; }
-            if(ok) validWep.push(wKey);
-        }
+        let validWep = []; for (let wKey in DB.weapons) { let w = DB.weapons[wKey]; let ok = false; if (arq === 'valor') ok = true; else if (arq === 'gracia') { if (w.cat === 'simple' || w.prop === 'sutil') ok = true; } else { if (w.cat === 'simple') ok = true; } if(ok) validWep.push(wKey); }
         document.getElementById('sel_weapon').value = validWep[Math.floor(Math.random() * validWep.length)];
-
-        this.updateOptions(true); 
-        randSel('sel_filo');
-
+        this.updateOptions(true); randSel('sel_filo');
         const randRadio = (name) => { const r = Array.from(document.querySelectorAll(`input[name="${name}"]`)); r.forEach(x=>x.checked=false); r[Math.floor(Math.random()*r.length)].checked=true; };
         randRadio('save_common'); randRadio('save_uncommon');
-        
-        const randChecks = (name, limit) => {
-            const b = Array.from(document.querySelectorAll(`input[name="${name}"]`));
-            b.forEach(x=>x.checked=false); b.sort(()=>Math.random()-0.5); b.slice(0,limit).forEach(x=>x.checked=true);
-        };
+        const randChecks = (name, limit) => { const b = Array.from(document.querySelectorAll(`input[name="${name}"]`)); b.forEach(x=>x.checked=false); b.sort(()=>Math.random()-0.5); b.slice(0,limit).forEach(x=>x.checked=true); };
         const arqLimit = DB.archetypes[document.getElementById('sel_arq').value].limit;
         randChecks('chk_arq', arqLimit); randChecks('chk_bg', 2); 
-        
         randChecks('chk_talents', 3);
-        this.showTalentSummary();
-        this.toggleSkillsEdit(false); // Auto-confirm skills
         
+        // COLLAPSE ALL
+        this.showTalentSummary();
+        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
         this.calc();
     },
 
     clear: function() {
         ['base_FUE','base_DES','base_CON','base_INT','base_SAB','base_CAR'].forEach(id => { document.getElementById(id).value = 8; });
-        document.getElementById('char_name').value = "";
-        const resets = ['sel_desc', 'sel_arq', 'sel_bg', 'sel_armor', 'sel_weapon', 'sel_shield'];
-        resets.forEach(id => document.getElementById(id).selectedIndex = 0);
-        const checks = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-        checks.forEach(c => c.checked = false);
+        document.getElementById('char_name').value = ""; document.getElementById('char_concept').value = "";
+        const resets = ['sel_desc', 'sel_arq', 'sel_bg', 'sel_armor', 'sel_weapon', 'sel_shield']; resets.forEach(id => document.getElementById(id).selectedIndex = 0);
+        const checks = document.querySelectorAll('input[type="checkbox"], input[type="radio"]'); checks.forEach(c => c.checked = false);
         document.getElementById('char_img').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
-        this.toggleTalentsEdit(true); 
-        this.toggleSkillsEdit(true);
-        this.updateOptions(true);
-        this.calc();
+        
+        ['talents', 'skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, true));
+        this.updateOptions(true); this.calc();
     },
 
     saveChar: function() {
-        const charName = document.getElementById('char_name').value.trim();
-        if (!charName) { alert("¡Tu héroe necesita un nombre!"); return; }
-        let roster = JSON.parse(localStorage.getItem('sands_roster') || "{}");
-        if (roster[charName] && !confirm(`¿Sobrescribir a "${charName}"?`)) return;
-        const saveData = { inputs: {}, selects: {}, checks: [], portrait: document.getElementById('char_img').src };
+        const charName = document.getElementById('char_name').value.trim(); if (!charName) { alert("¡Tu héroe necesita un nombre!"); return; }
+        let roster = JSON.parse(localStorage.getItem('sands_roster') || "{}"); if (roster[charName] && !confirm(`¿Sobrescribir a "${charName}"?`)) return;
+        const saveData = { inputs: {}, selects: {}, checks: [], portrait: document.getElementById('char_img').src, concept: document.getElementById('char_concept').value };
         document.querySelectorAll('input[type="text"], input[type="number"]').forEach(el => saveData.inputs[el.id] = el.value);
         document.querySelectorAll('select').forEach(el => saveData.selects[el.id] = el.value);
-        document.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(el => {
-            saveData.checks.push({ name: el.name, value: el.value, id: el.id });
-        });
-        roster[charName] = saveData;
-        try { localStorage.setItem('sands_roster', JSON.stringify(roster)); alert(`Guardado: ${charName}`); } 
-        catch (e) { alert("¡Memoria llena! Usa imágenes más pequeñas."); }
+        document.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(el => { saveData.checks.push({ name: el.name, value: el.value, id: el.id }); });
+        roster[charName] = saveData; try { localStorage.setItem('sands_roster', JSON.stringify(roster)); alert(`Guardado: ${charName}`); } catch (e) { alert("¡Memoria llena! Usa imágenes más pequeñas."); }
     },
 
     openLoadMenu: function() {
-        const roster = JSON.parse(localStorage.getItem('sands_roster') || "{}");
-        const listDiv = document.getElementById('char_list');
-        listDiv.innerHTML = "";
-        Object.keys(roster).forEach(name => {
-            const row = document.createElement('div');
-            row.className = 'char-row';
-            row.innerHTML = `<span class="char-info">${name}</span><div><button class="btn-mini btn-load" onclick="app.loadSpecificChar('${name}')">CARGAR</button><button class="btn-mini btn-del" onclick="app.deleteChar('${name}')">BORRAR</button></div>`;
-            listDiv.appendChild(row);
-        });
+        const roster = JSON.parse(localStorage.getItem('sands_roster') || "{}"); const listDiv = document.getElementById('char_list'); listDiv.innerHTML = "";
+        Object.keys(roster).forEach(name => { const row = document.createElement('div'); row.className = 'char-row'; row.innerHTML = `<span class="char-info">${name}</span><div><button class="btn-mini btn-load" onclick="app.loadSpecificChar('${name}')">CARGAR</button><button class="btn-mini btn-del" onclick="app.deleteChar('${name}')">BORRAR</button></div>`; listDiv.appendChild(row); });
         document.getElementById('char_manager').showModal();
     },
 
     loadSpecificChar: function(name) {
-        const roster = JSON.parse(localStorage.getItem('sands_roster') || "{}");
-        const data = roster[name];
-        if (!data) return;
+        const roster = JSON.parse(localStorage.getItem('sands_roster') || "{}"); const data = roster[name]; if (!data) return;
         for (let id in data.inputs) { const el = document.getElementById(id); if (el) el.value = data.inputs[id]; }
         for (let id in data.selects) { const el = document.getElementById(id); if (el) el.value = data.selects[id]; }
-        if (data.portrait) document.getElementById('char_img').src = data.portrait;
+        if (data.portrait) document.getElementById('char_img').src = data.portrait; if (data.concept) document.getElementById('char_concept').value = data.concept;
         this.updateOptions(true); 
         document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
-        data.checks.forEach(item => {
-            let el = document.getElementById(item.id);
-            if (!el) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`);
-            if (el) el.checked = true;
-        });
+        data.checks.forEach(item => { let el = document.getElementById(item.id); if (!el) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`); if (el) el.checked = true; });
         
-        const talentCount = document.querySelectorAll('input[name="chk_talents"]:checked').length;
-        if(talentCount >= 3) this.showTalentSummary();
-        else this.toggleTalentsEdit(true);
-        
-        // Auto-confirmar skills al cargar si hay selecciones
-        this.toggleSkillsEdit(false);
+        this.showTalentSummary();
+        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
 
-        this.calc();
-        document.getElementById('char_manager').close();
+        this.calc(); document.getElementById('char_manager').close();
     },
 
-    deleteChar: function(name) {
-        if(confirm(`¿Borrar a "${name}"?`)) {
-            let roster = JSON.parse(localStorage.getItem('sands_roster') || "{}");
-            delete roster[name];
-            localStorage.setItem('sands_roster', JSON.stringify(roster));
-            this.openLoadMenu();
-        }
-    }
+    deleteChar: function(name) { if(confirm(`¿Borrar a "${name}"?`)) { let roster = JSON.parse(localStorage.getItem('sands_roster') || "{}"); delete roster[name]; localStorage.setItem('sands_roster', JSON.stringify(roster)); this.openLoadMenu(); } }
 };
 
 window.onload = function() { app.init(); };
 
 // PWA
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault(); deferredPrompt = e;
-  const btnInstall = document.getElementById('btn-install');
-  if(btnInstall) {
-      btnInstall.style.display = 'block';
-      btnInstall.addEventListener('click', () => {
-        btnInstall.style.display = 'none'; deferredPrompt.prompt(); deferredPrompt = null;
-      });
-  }
-});
+let deferredPrompt; window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const btnInstall = document.getElementById('btn-install'); if(btnInstall) { btnInstall.style.display = 'block'; btnInstall.addEventListener('click', () => { btnInstall.style.display = 'none'; deferredPrompt.prompt(); deferredPrompt = null; }); } });
 </script>
 
 </body>
