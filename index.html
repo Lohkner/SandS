@@ -39,7 +39,8 @@
         .skill-area { border: 1px solid var(--ink-main); padding: 10px; background: #fdfdfd; max-height: 200px; overflow-y: auto; }
         .skill-opt { cursor: pointer; display: block; margin-bottom: 4px; }
         .skill-opt:hover { background-color: #eee; }
-        .grade-1 { background: var(--ink-main); color: #fff; }
+        .skill-tag { display: inline-block; border: 1px solid var(--ink-main); padding: 2px 6px; margin: 2px; background: #fff; font-family: var(--font-mono); font-size: 0.9em; box-shadow: 2px 2px 0px #ccc; }
+        .grade-1 { background: var(--ink-main); color: #fff; border-color: var(--ink-main); }
 
         .res-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         .big-stat { border: 4px solid var(--ink-main); text-align: center; padding: 10px; margin-bottom: 20px; border-radius: 50% 50% 0 0; background: #fff; }
@@ -69,6 +70,29 @@
         .sidebar { position: sticky; top: 20px; height: fit-content; }
         hr { border: 0; border-top: 2px solid var(--ink-main); margin: 15px 0; height: 3px; border-bottom: 1px solid var(--ink-main); }
         .warn-text { color: var(--ink-red); font-family: var(--font-title); font-weight: bold; text-align: center; }
+
+        /* === ESTILOS NUEVOS PARA TALENTOS Y SKILLS === */
+        #talents_summary_view, #skills_summary_view {
+            border: 1px solid var(--ink-main);
+            background: #fff;
+            padding: 15px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        .talent-final-item { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dotted #ccc; }
+        .talent-final-item:last-child { border-bottom: none; }
+        .btn-edit { 
+            font-size: 0.9em; padding: 5px 10px; background: transparent; 
+            border: 1px solid var(--ink-main); cursor: pointer; display: block; margin: 10px auto 0 auto;
+            text-transform: uppercase; font-family: var(--font-mono);
+        }
+        .btn-edit:hover { background: var(--ink-main); color: #fff; }
+        
+        .btn-confirm {
+            background: var(--ink-main); color: #fff; border:none; padding: 8px; 
+            width:100%; cursor: pointer; font-family: var(--font-title);
+            margin-top: 10px;
+        }
 
         dialog.modal-osr { background: var(--bg-paper); color: var(--ink-main); border: 4px double var(--ink-main); width: 90%; max-width: 500px; }
         dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
@@ -148,7 +172,6 @@
                     <label>Arquetipo (Clase)</label>
                     <select id="sel_arq" onchange="app.updateOptions()"></select>
                     <div id="arq_info" class="bonus-desc"></div>
-                    
                     <label style="margin-top:10px; font-size:0.9em;">Selección de Filo (Edge)</label>
                     <select id="sel_filo" onchange="app.calc()"></select>
                 </div>
@@ -181,27 +204,40 @@
 
         <div class="section">
             <h2>IV. Habilidades y Maestría</h2>
-            <div class="grid-2">
-                <div>
-                    <h3>Por Arquetipo (Elige <span id="limit_arq">2</span>)</h3>
-                    <div id="skills_arq" class="skill-area"></div>
+            
+            <div id="skills_edit_view">
+                <div class="grid-2">
+                    <div>
+                        <h3>Por Arquetipo (Elige <span id="limit_arq">2</span>)</h3>
+                        <div id="skills_arq" class="skill-area"></div>
+                    </div>
+                    <div>
+                        <h3>Por Trasfondo (Elige 2)</h3>
+                        <div id="skills_bg" class="skill-area"></div>
+                    </div>
                 </div>
-                <div>
-                    <h3>Por Trasfondo (Elige 2)</h3>
-                    <div id="skills_bg" class="skill-area"></div>
-                </div>
+                <button class="btn-confirm" onclick="app.toggleSkillsEdit(false)">✅ Confirmar Selección</button>
             </div>
-            <div style="margin-top: 15px; border-top: 1px solid var(--ink-main); padding-top: 10px;">
-                <label>MAESTRÍAS FINALES</label>
+
+            <div id="skills_summary_view" style="display:none;">
+                <label style="text-align:center;">MAESTRÍAS FINALES</label>
                 <div id="final_skills_list"></div>
+                <button class="btn-edit" onclick="app.toggleSkillsEdit(true)">✏️ Modificar Habilidades</button>
             </div>
         </div>
 
         <div class="section">
             <h2>V. Talentos (Elige 3)</h2>
-            <div id="talents_container" class="grid-2"></div>
-            <div style="text-align:right; margin-top:5px; font-family:var(--font-mono);">
-                Seleccionados: <span id="talent_count">0</span>/3
+            <div id="talents_edit_view">
+                <div id="talents_container" class="grid-2"></div>
+                <div style="text-align:right; margin-top:5px; font-family:var(--font-mono);">
+                    Seleccionados: <span id="talent_count">0</span>/3
+                </div>
+            </div>
+            <div id="talents_summary_view" style="display:none;">
+                <label style="text-align:center; color:var(--ink-red);">TALENTOS ACTIVOS</label>
+                <div id="talents_summary_list"></div>
+                <button class="btn-edit" onclick="app.toggleTalentsEdit(true)">✏️ Modificar Talentos</button>
             </div>
         </div>
 
@@ -243,7 +279,6 @@
 </dialog>
 
 <script>
-// --- BASE DE DATOS ACTUALIZADA ---
 const DB = {
     descriptors: {
         "humano": { name: "Humano", bonus: "+1 a Dos", mods:{}, grant: [], txt: "Versátil, Ambición." },
@@ -258,30 +293,11 @@ const DB = {
         "draconido": { name: "Dracónido", bonus: "+2 FUE, +1 CAR", mods:{FUE:2, CAR:1}, grant: [], txt: "Resistencia Elemental, Presencia." },
         "cambiante": { name: "Cambiante", bonus: "+2 FUE/DES, +1 CON", mods:{FUE:2, CON:1}, grant: ["Supervivencia"], txt: "Garras Naturales, Instinto." }
     },
-    
-    // Arquetipos con reglas de Filo y descripción
     archetypes: {
-        "valor": { 
-            name: "Audaz (Luchador)", pv: 8, adr: 6, ing: 2, ca: 1, limit: 2,
-            skills: ["Proeza Física", "Intimidación", "Percepción", "Supervivencia"], 
-            edges: ["Físico", "Mental"],
-            txt: "Competencia Total. Ignora requisitos. +1 CA." 
-        },
-        "gracia": { 
-            name: "Sutil (Experto)", pv: 6, adr: 4, ing: 4, ca: 0, limit: 2,
-            skills: ["Sigilo", "Engaño", "Investigación", "Percepción", "Proeza Física", "Tecnología"], 
-            edges: ["Físico", "Mental", "Flexible"],
-            txt: "Comp. Simple + Sutil. Ignora req en Sutiles." 
-        },
-        "espiritu": { 
-            name: "Sagaz (Adepto)", pv: 4, adr: 0, ing: 10, ca: 0, limit: 4,
-            skills: ["Arcano", "Historia", "Medicina", "Naturaleza", "Perspicacia", "Investigación", "Religión"], 
-            edges: ["Mental", "Físico"],
-            txt: "Comp. Simple solamente. Debe cumplir requisitos." 
-        }
+        "valor": { name: "Audaz (Luchador)", pv: 8, adr: 6, ing: 2, ca: 1, limit: 2, skills: ["Proeza Física", "Intimidación", "Percepción", "Supervivencia"], edges: ["Físico", "Mental"], txt: "Competencia Total. Ignora requisitos. +1 CA." },
+        "gracia": { name: "Sutil (Experto)", pv: 6, adr: 4, ing: 4, ca: 0, limit: 2, skills: ["Sigilo", "Engaño", "Investigación", "Percepción", "Proeza Física", "Tecnología"], edges: ["Físico", "Mental", "Flexible"], txt: "Comp. Simple + Sutil. Ignora req en Sutiles." },
+        "espiritu": { name: "Sagaz (Adepto)", pv: 4, adr: 0, ing: 10, ca: 0, limit: 4, skills: ["Arcano", "Historia", "Medicina", "Naturaleza", "Perspicacia", "Investigación", "Religión"], edges: ["Mental", "Físico"], txt: "Comp. Simple solamente. Debe cumplir requisitos." }
     },
-    
-    // Backgrounds (Sin cambios)
     backgrounds: {
         "soldado": { name: "Soldado", skills: ["Proeza Física", "Intimidación", "Perspicacia", "Tecnología", "Supervivencia", "Medicina"] },
         "picaro": { name: "Pícaro", skills: ["Sigilo", "Engaño", "Influencia", "Conocimiento Calle", "Percepción", "Tecnología"] },
@@ -297,8 +313,6 @@ const DB = {
         "mercader": { name: "Mercader", skills: ["Influencia", "Investigación", "Engaño", "Perspicacia", "Conocimiento Calle", "Historia"] },
         "superviviente": { name: "Superviviente", skills: ["Supervivencia", "Proeza Física", "Percepción", "Medicina", "Sigilo", "Naturaleza"] }
     },
-    
-    // Talentos (Sin cambios)
     talents: {
         "acero": [
             { name: "Lancero Marcial", desc: "Ataque oportunidad al entrar." },
@@ -329,26 +343,6 @@ const DB = {
             { name: "Atleta", desc: "+1 FUE o DES.", id:"atleta" }
         ]
     },
-    
-    // Armas actualizadas con Categoría, Propiedad y Requisitos
-    weapons: {
-        "desarmado": { name: "Desarmado", dmg: "1d4", stat: "FUE", slots: 0, cat: "simple", prop: "sutil", req: 0 },
-        "daga": { name: "Daga", dmg: "1d4", stat: "FIN", slots: 1, cat: "simple", prop: "sutil", req: 0 },
-        "baston": { name: "Bastón", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "versatil", req: 0 },
-        "martillo_l": { name: "Martillo Ligero", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "arrojadiza", req: 0 },
-        "ballesta": { name: "Ballesta Ligera", dmg: "1d8", stat: "DES", slots: 2, cat: "simple", prop: "distancia", req: 0 },
-        
-        "espada_c": { name: "Espada Corta", dmg: "1d6", stat: "FIN", slots: 1, cat: "marcial", prop: "sutil", req: 0 },
-        "espada_l": { name: "Espada Larga", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
-        "hacha": { name: "Hacha Batalla", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
-        "martillo_g": { name: "Martillo Guerra", dmg: "1d8/10", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
-        
-        "espadon": { name: "Espadón", dmg: "2d6", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 },
-        "gran_hacha": { name: "Gran Hacha", dmg: "1d12", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 },
-        "arco_c": { name: "Arco Corto", dmg: "1d6", stat: "DES", slots: 2, cat: "marcial", prop: "distancia", req: 0 },
-        "arco_l": { name: "Arco Largo", dmg: "1d8", stat: "DES", slots: 3, cat: "marcial", prop: "distancia", req: 11 }
-    },
-
     armors: {
         "none": { name: "Ropa (Sin Armadura)", ca: 10, type: "none", slots: 0 },
         "cuero": { name: "Cuero (Ligera)", ca: 11, type: "light", slots: 1 },
@@ -363,6 +357,21 @@ const DB = {
         "rodela": { name: "Rodela (+1 CA)", bonus: 1, slots: 0 },
         "escudo": { name: "Escudo (+2 CA)", bonus: 2, slots: 1 },
         "torre": { name: "Escudo Torre (+3 CA)", bonus: 3, slots: 2 }
+    },
+    weapons: {
+        "desarmado": { name: "Desarmado", dmg: "1d4", stat: "FUE", slots: 0, cat: "simple", prop: "sutil", req: 0 },
+        "daga": { name: "Daga", dmg: "1d4", stat: "FIN", slots: 1, cat: "simple", prop: "sutil", req: 0 },
+        "baston": { name: "Bastón", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "versatil", req: 0 },
+        "martillo_l": { name: "Martillo Ligero", dmg: "1d6", stat: "FUE", slots: 1, cat: "simple", prop: "arrojadiza", req: 0 },
+        "ballesta": { name: "Ballesta Ligera", dmg: "1d8", stat: "DES", slots: 2, cat: "simple", prop: "distancia", req: 0 },
+        "espada_c": { name: "Espada Corta", dmg: "1d6", stat: "FIN", slots: 1, cat: "marcial", prop: "sutil", req: 0 },
+        "espada_l": { name: "Espada Larga", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
+        "hacha": { name: "Hacha Batalla", dmg: "1d8", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
+        "martillo_g": { name: "Martillo Guerra", dmg: "1d8/10", stat: "FUE", slots: 2, cat: "marcial", prop: "versatil", req: 10 },
+        "espadon": { name: "Espadón", dmg: "2d6", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 },
+        "gran_hacha": { name: "Gran Hacha", dmg: "1d12", stat: "FUE", slots: 3, cat: "marcial", prop: "pesada", req: 13 },
+        "arco_c": { name: "Arco Corto", dmg: "1d6", stat: "DES", slots: 2, cat: "marcial", prop: "distancia", req: 0 },
+        "arco_l": { name: "Arco Largo", dmg: "1d8", stat: "DES", slots: 3, cat: "marcial", prop: "distancia", req: 11 }
     }
 };
 
@@ -417,16 +426,12 @@ const app = {
         const bgKey = document.getElementById('sel_bg').value;
         const descKey = document.getElementById('sel_desc').value;
 
-        // Info Textos
         document.getElementById('desc_info').innerText = DB.descriptors[descKey].bonus + ". " + DB.descriptors[descKey].txt;
         document.getElementById('arq_info').innerText = DB.archetypes[arqKey].txt;
         document.getElementById('bg_info').innerText = "Otorga 2 Habilidades y Kit.";
 
-        // Actualizar Select de Filo (Edge) según Arquetipo
         const filoSelect = document.getElementById('sel_filo');
         const availableEdges = DB.archetypes[arqKey].edges;
-        
-        // Guardar valor actual para intentar mantenerlo
         const currentEdge = filoSelect.value;
         filoSelect.innerHTML = "";
         availableEdges.forEach(edge => {
@@ -436,11 +441,10 @@ const app = {
         });
         if(availableEdges.includes(currentEdge)) filoSelect.value = currentEdge;
 
-        // Render Skills
         this.renderCheckboxes('skills_arq', 'chk_arq', DB.archetypes[arqKey].skills, DB.archetypes[arqKey].limit);
         this.renderCheckboxes('skills_bg', 'chk_bg', DB.backgrounds[bgKey].skills, 2);
-        document.getElementById('limit_arq').innerText = DB.archetypes[arqKey].limit;
         
+        document.getElementById('limit_arq').innerText = DB.archetypes[arqKey].limit;
         this.calc();
     },
 
@@ -465,7 +469,7 @@ const app = {
                 let lbl = document.createElement('label');
                 lbl.className = 'skill-opt';
                 let extraAttr = t.id ? `data-id="${t.id}"` : "";
-                lbl.innerHTML = `<input type="checkbox" name="chk_talents" value="${t.name}" ${extraAttr} onchange="app.checkLimit('chk_talents', 3); app.calc()"> 
+                lbl.innerHTML = `<input type="checkbox" name="chk_talents" value="${t.name}" ${extraAttr} data-desc="${t.desc}" onchange="app.checkTalentLimit()"> 
                                  <span style="font-weight:bold">${t.name}</span> <span style="font-size:0.8em; color:#555;">${t.desc}</span>`;
                 col.appendChild(lbl);
             });
@@ -481,6 +485,45 @@ const app = {
         }
     },
 
+    // --- NUEVA LÓGICA DE COLAPSABLES ---
+    checkTalentLimit: function() {
+        const checked = document.querySelectorAll('input[name="chk_talents"]:checked');
+        document.getElementById('talent_count').innerText = checked.length;
+        if(checked.length >= 3) {
+            if(checked.length > 3) {
+                alert("Solo puedes elegir 3.");
+                event.target.checked = false;
+                return;
+            }
+            this.showTalentSummary();
+        }
+        this.calc();
+    },
+
+    showTalentSummary: function() {
+        const checked = Array.from(document.querySelectorAll('input[name="chk_talents"]:checked'));
+        const listDiv = document.getElementById('talents_summary_list');
+        listDiv.innerHTML = "";
+        checked.forEach(chk => {
+            const div = document.createElement('div');
+            div.className = 'talent-final-item';
+            div.innerHTML = `<strong>${chk.value}</strong><br><i style="font-size:0.9em; color:#555;">${chk.getAttribute('data-desc')}</i>`;
+            listDiv.appendChild(div);
+        });
+        document.getElementById('talents_edit_view').style.display = 'none';
+        document.getElementById('talents_summary_view').style.display = 'block';
+    },
+
+    toggleTalentsEdit: function(showEdit) {
+        document.getElementById('talents_edit_view').style.display = showEdit ? 'block' : 'none';
+        document.getElementById('talents_summary_view').style.display = showEdit ? 'none' : 'block';
+    },
+
+    toggleSkillsEdit: function(showEdit) {
+        document.getElementById('skills_edit_view').style.display = showEdit ? 'block' : 'none';
+        document.getElementById('skills_summary_view').style.display = showEdit ? 'none' : 'block';
+    },
+
     getMod: function(val) {
         if(val <= 3) return -3;
         if(val <= 6) return -2;
@@ -492,7 +535,6 @@ const app = {
     },
 
     calc: function() {
-        // --- 1. ATRIBUTOS ---
         const stats = {
             FUE: parseInt(document.getElementById('base_FUE').value)||8,
             DES: parseInt(document.getElementById('base_DES').value)||8,
@@ -503,9 +545,9 @@ const app = {
         };
         const descData = DB.descriptors[document.getElementById('sel_desc').value];
         for(let k in descData.mods) stats[k] += descData.mods[k];
-        const activeTalents = Array.from(document.querySelectorAll('input[name="chk_talents"]:checked'));
-        document.getElementById('talent_count').innerText = activeTalents.length;
+        
         if(document.querySelector('input[data-id="atleta"]:checked')) stats.DES += 1;
+
         let statHTML = "";
         for(let k in stats) {
             let mod = this.getMod(stats[k]);
@@ -513,7 +555,6 @@ const app = {
         }
         document.getElementById('stats_final_display').innerHTML = statHTML;
         
-        // --- 2. SALVACIONES ---
         const profBonus = 2;
         const selCommon = document.querySelector('input[name="save_common"]:checked')?.value;
         const selUncommon = document.querySelector('input[name="save_uncommon"]:checked')?.value;
@@ -528,7 +569,7 @@ const app = {
         });
         document.getElementById('saves_display').innerHTML = savesHTML;
 
-        // --- 3. SKILLS ---
+        // Skills logic
         const skillCounts = {};
         descData.grant.forEach(s => skillCounts[s] = (skillCounts[s]||0) + 1);
         ['chk_arq', 'chk_bg'].forEach(grp => {
@@ -546,14 +587,12 @@ const app = {
             finalDiv.appendChild(tag);
         }
 
-        // --- 4. COMBAT & RECURSOS ---
         const arqKey = document.getElementById('sel_arq').value;
         const arqData = DB.archetypes[arqKey];
         const armor = DB.armors[document.getElementById('sel_armor').value];
         const weapon = DB.weapons[document.getElementById('sel_weapon').value];
         const shield = DB.shields[document.getElementById('sel_shield').value];
         
-        // Recursos Base
         const pv = arqData.pv + stats.CON; 
         const flesh = stats.CON;
         let bonusIng = document.querySelector('input[data-id="despertar"]:checked') ? 6 : 0;
@@ -563,7 +602,6 @@ const app = {
         const adr = maxFis + 1 + arqData.adr;
         const ing = maxMen + 1 + arqData.ing + bonusIng;
         
-        // CA
         let modDes = this.getMod(stats.DES);
         let ca = armor.ca;
         let defNatural = document.querySelector('input[data-id="def_nat"]:checked');
@@ -577,49 +615,28 @@ const app = {
         ca += arqData.ca;
         if(document.getElementById('chk_magic_ac').checked) ca += 1;
 
-        // --- LÓGICA DE ATAQUE AVANZADA ---
-        let atkAttrVal = stats.FUE;
-        if (weapon.stat === 'DES') atkAttrVal = stats.DES;
-        if (weapon.stat === 'FIN') atkAttrVal = Math.max(stats.FUE, stats.DES);
-        let baseAtkMod = this.getMod(atkAttrVal);
-
-        // Chequeo de Competencia y Requisitos
-        let isProficient = false;
+        let atkStatVal = stats.FUE;
+        if (weapon.stat === 'DES') atkStatVal = stats.DES;
+        if (weapon.stat === 'FIN') atkStatVal = Math.max(stats.FUE, stats.DES);
+        
+        let attrMod = this.getMod(atkStatVal);
+        let isProf = false;
         let meetsReq = (weapon.req === 0) || (stats.FUE >= weapon.req || stats.DES >= weapon.req); 
-        let alertMsg = "";
 
-        if (arqKey === "valor") { 
-            // Audaz: Competente con todo, Ignora Requisitos
-            isProficient = true; 
-            meetsReq = true; 
-        } 
+        if (arqKey === "valor") { isProf = true; meetsReq = true; } 
         else if (arqKey === "gracia") { 
-            // Sutil: Competente si Simple o Sutil. Ignora req si es Sutil
             if (weapon.cat === "simple" || weapon.prop === "sutil") {
-                isProficient = true;
+                isProf = true;
                 if (weapon.prop === "sutil") meetsReq = true;
             }
-        } 
-        else { 
-            // Sagaz: Competente solo Simple. Respeta Requisitos
-            if (weapon.cat === "simple") isProficient = true;
-        }
+        } else { if (weapon.cat === "simple") isProf = true; }
 
-        // Calculo Final de Ataque
-        let totalAtk = baseAtkMod + (isProficient ? 2 : 0);
-        
-        if (!meetsReq) {
-            alertMsg = "⚠️ Faltan requisitos de Atributo. (Penalizado)";
-            // En OSR no cumplir requisito suele impedir el uso o quitar bonos. 
-            // Aquí quitamos el bono de competencia si lo tuviera, o aplicamos desventaja lógica
-            if(isProficient) totalAtk -= 2; 
-        }
+        let totalAtk = attrMod + (isProf ? 2 : 0);
+        if(!meetsReq && isProf) totalAtk -= 2;
 
-        // Calculo de Magia
         let maxMentalMod = Math.max(this.getMod(stats.INT), this.getMod(stats.SAB), this.getMod(stats.CAR));
         let magicAtkMod = maxMentalMod + 2;
 
-        // Daño
         let dmgAttr = stats.FUE;
         if (weapon.stat === 'DES') dmgAttr = stats.DES;
         if (weapon.stat === 'FIN') dmgAttr = Math.max(stats.FUE, stats.DES);
@@ -630,10 +647,9 @@ const app = {
         const cargaTotal = armor.slots + weapon.slots + shield.slots;
         const cargaMax = stats.FUE;
 
-        // UI Updates
         document.getElementById('armor_info').innerText = `Tipo: ${armor.type.toUpperCase()} | Slots: ${armor.slots}`;
         document.getElementById('weapon_info').innerHTML = `Ataque: <span style="color:var(--ink-red); font-weight:bold;">${totalAtk >= 0 ? '+' : ''}${totalAtk}</span> | Daño: ${finalDmg} | Slots: ${weapon.slots}`;
-        document.getElementById('prof_alert').innerText = alertMsg;
+        document.getElementById('prof_alert').innerText = !meetsReq ? "⚠️ Faltan requisitos" : "";
 
         document.getElementById('res_pv').innerText = pv;
         document.getElementById('res_carne').innerText = flesh;
@@ -651,58 +667,45 @@ const app = {
         ['base_FUE','base_DES','base_CON','base_INT','base_SAB','base_CAR'].forEach(id => {
             document.getElementById(id).value = Math.floor(Math.random()*6)+Math.floor(Math.random()*6)+Math.floor(Math.random()*6)+3;
         });
+        const randSel = (id) => { const s = document.getElementById(id); s.selectedIndex = Math.floor(Math.random()*s.options.length); };
         
-        const randSel = (id) => {
-            const sel = document.getElementById(id);
-            sel.selectedIndex = Math.floor(Math.random() * sel.options.length);
-        };
         randSel('sel_desc');
         randSel('sel_arq'); 
         randSel('sel_bg');
         randSel('sel_shield');
 
-        // Logic de Armadura
         const arq = document.getElementById('sel_arq').value;
-        let validArmorTypes = arq === 'espiritu' ? ['none'] : (arq === 'gracia' ? ['none', 'light'] : ['none','light','medium','heavy']);
-        const armorKeys = Object.keys(DB.armors).filter(k => validArmorTypes.includes(DB.armors[k].type));
-        document.getElementById('sel_armor').value = armorKeys[Math.floor(Math.random() * armorKeys.length)];
+        let validArmor = arq === 'espiritu' ? ['none'] : (arq === 'gracia' ? ['none', 'light'] : ['none','light','medium','heavy']);
+        const armKeys = Object.keys(DB.armors).filter(k => validArmor.includes(DB.armors[k].type));
+        document.getElementById('sel_armor').value = armKeys[Math.floor(Math.random() * armKeys.length)];
 
-        // Logic de Arma (Coherencia con Competencia)
-        let validWeapons = [];
+        let validWep = [];
         for (let wKey in DB.weapons) {
             let w = DB.weapons[wKey];
-            let isValid = false;
-            // Audaz: Todo
-            if (arq === 'valor') isValid = true;
-            // Sutil: Simple o Sutil
-            else if (arq === 'gracia') { if (w.cat === 'simple' || w.prop === 'sutil') isValid = true; }
-            // Sagaz: Solo Simple
-            else { if (w.cat === 'simple') isValid = true; }
-            
-            if(isValid) validWeapons.push(wKey);
+            let ok = false;
+            if (arq === 'valor') ok = true;
+            else if (arq === 'gracia') { if (w.cat === 'simple' || w.prop === 'sutil') ok = true; }
+            else { if (w.cat === 'simple') ok = true; }
+            if(ok) validWep.push(wKey);
         }
-        document.getElementById('sel_weapon').value = validWeapons[Math.floor(Math.random() * validWeapons.length)];
+        document.getElementById('sel_weapon').value = validWep[Math.floor(Math.random() * validWep.length)];
 
         this.updateOptions(true); 
-
-        // Elegir Filo Aleatorio
         randSel('sel_filo');
 
-        // Checks
-        const randRadio = (name) => {
-            const radios = Array.from(document.querySelectorAll(`input[name="${name}"]`));
-            radios.forEach(r => r.checked = false);
-            radios[Math.floor(Math.random() * radios.length)].checked = true;
-        };
+        const randRadio = (name) => { const r = Array.from(document.querySelectorAll(`input[name="${name}"]`)); r.forEach(x=>x.checked=false); r[Math.floor(Math.random()*r.length)].checked=true; };
         randRadio('save_common'); randRadio('save_uncommon');
+        
         const randChecks = (name, limit) => {
-            const boxes = Array.from(document.querySelectorAll(`input[name="${name}"]`));
-            boxes.forEach(b => b.checked = false);
-            boxes.sort(() => Math.random() - 0.5);
-            boxes.slice(0, limit).forEach(b => b.checked = true);
+            const b = Array.from(document.querySelectorAll(`input[name="${name}"]`));
+            b.forEach(x=>x.checked=false); b.sort(()=>Math.random()-0.5); b.slice(0,limit).forEach(x=>x.checked=true);
         };
         const arqLimit = DB.archetypes[document.getElementById('sel_arq').value].limit;
-        randChecks('chk_arq', arqLimit); randChecks('chk_bg', 2); randChecks('chk_talents', 3);
+        randChecks('chk_arq', arqLimit); randChecks('chk_bg', 2); 
+        
+        randChecks('chk_talents', 3);
+        this.showTalentSummary();
+        this.toggleSkillsEdit(false); // Auto-confirm skills
         
         this.calc();
     },
@@ -715,6 +718,8 @@ const app = {
         const checks = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
         checks.forEach(c => c.checked = false);
         document.getElementById('char_img').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
+        this.toggleTalentsEdit(true); 
+        this.toggleSkillsEdit(true);
         this.updateOptions(true);
         this.calc();
     },
@@ -731,10 +736,8 @@ const app = {
             saveData.checks.push({ name: el.name, value: el.value, id: el.id });
         });
         roster[charName] = saveData;
-        try {
-            localStorage.setItem('sands_roster', JSON.stringify(roster));
-            alert(`Guardado: ${charName}`);
-        } catch (e) { alert("¡Memoria llena! Usa imágenes más pequeñas."); }
+        try { localStorage.setItem('sands_roster', JSON.stringify(roster)); alert(`Guardado: ${charName}`); } 
+        catch (e) { alert("¡Memoria llena! Usa imágenes más pequeñas."); }
     },
 
     openLoadMenu: function() {
@@ -764,6 +767,14 @@ const app = {
             if (!el) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`);
             if (el) el.checked = true;
         });
+        
+        const talentCount = document.querySelectorAll('input[name="chk_talents"]:checked').length;
+        if(talentCount >= 3) this.showTalentSummary();
+        else this.toggleTalentsEdit(true);
+        
+        // Auto-confirmar skills al cargar si hay selecciones
+        this.toggleSkillsEdit(false);
+
         this.calc();
         document.getElementById('char_manager').close();
     },
