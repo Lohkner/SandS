@@ -53,22 +53,14 @@
             border: 2px solid var(--ink-main); 
             padding: 15px; 
             box-shadow: 5px 5px 0px rgba(0,0,0,0.1); 
-            
-            /* Sticky con altura controlada */
             position: sticky; 
             top: 20px; 
-            max-height: calc(100vh - 40px); /* Altura máxima = Pantalla menos margen */
-            overflow-y: auto; /* Permitir scroll si es muy alta */
-            
-            /* Ocultar barra de scroll (Firefox, IE, Edge) */
+            max-height: calc(100vh - 40px); 
+            overflow-y: auto; 
             scrollbar-width: none; 
             -ms-overflow-style: none;  
         }
-        
-        /* Ocultar barra de scroll (Chrome, Safari, Opera) */
-        .sidebar::-webkit-scrollbar { 
-            display: none; 
-        }
+        .sidebar::-webkit-scrollbar { display: none; }
 
         /* === 4. FORMULARIOS === */
         label { font-family: var(--font-title); color: var(--ink-accent); font-size: 1.1em; display: block; margin-top: 10px; }
@@ -103,7 +95,7 @@
             padding: 5px;
         }
         .stat-box { border: 1px solid #ccc; background: #fdfdfd; }
-        .stat-box-dark { color: #fff; } /* Para el fondo negro */
+        .stat-box-dark { color: #fff; }
 
         @media (max-width: 800px) {
             .stats-grid, .stats-output-grid { grid-template-columns: repeat(3, 1fr); }
@@ -120,8 +112,11 @@
         .stat-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding: 6px 0; font-size: 1.05em; }
         .stat-val { font-family: var(--font-mono); font-weight: 700; font-size: 1.2em; }
 
+        /* --- RETRATO MAXIMIZADO --- */
         .portrait-frame {
-            width: 240px; height: 330px; margin: 0 auto 20px auto;
+            width: 270px; /* Ancho máximo disponible (300 - 15 - 15) */
+            height: 380px; /* Altura incrementada */
+            margin: 0 auto 20px auto;
             border: 4px double var(--ink-main); border-radius: 2px;
             overflow: hidden; background: #e8dcc5; cursor: pointer;
             position: relative; box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
@@ -173,9 +168,9 @@
         .modal-body { padding: 15px; max-height: 70vh; overflow-y: auto; }
         .char-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--ink-main); padding: 10px 0; }
 
-        /* === 9. EDITOR DE IMAGEN === */
+        /* === 9. EDITOR DE IMAGEN (Ancho actualizado) === */
         .crop-container {
-            width: 240px; height: 330px; margin: 20px auto;
+            width: 270px; height: 380px; margin: 20px auto; /* Coincide con portrait-frame */
             border: 2px dashed var(--ink-accent);
             position: relative; overflow: hidden;
             background: #000; touch-action: none;
@@ -446,7 +441,8 @@ const app = {
             reader.onload = function(e) {
                 app.cropState.img = new Image();
                 app.cropState.img.onload = function() {
-                    const containerW = 240; const containerH = 330;
+                    // Dimensiones actualizadas al nuevo tamaño del retrato
+                    const containerW = 270; const containerH = 380;
                     const scaleW = containerW / app.cropState.img.naturalWidth;
                     const scaleH = containerH / app.cropState.img.naturalHeight;
                     const baseScale = Math.max(scaleW, scaleH);
@@ -504,7 +500,8 @@ const app = {
     applyCrop: function() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        const containerW = 240; const containerH = 330;
+        // Dimensiones actualizadas al nuevo tamaño del retrato (x2 para alta resolución)
+        const containerW = 270; const containerH = 380;
         const targetW = containerW * 2; const targetH = containerH * 2;
         canvas.width = targetW; canvas.height = targetH;
         ctx.fillStyle = "black"; ctx.fillRect(0,0,targetW, targetH);
@@ -557,7 +554,6 @@ const app = {
         for(let k in stats) { 
             let mod = this.getMod(stats[k]); 
             let display = `${k}: <b>${stats[k]}</b> (${mod>=0?'+':''}${mod})`; 
-            let itemHtml = `<div class="stat-box-dark">${display}</div>`;
             statHTML += `<div class="stat-box-dark">${display}</div>`; 
             summaryHTML += `<div class="stat-box">${display}</div>`; 
         }
@@ -634,10 +630,7 @@ const app = {
         const arqLimit = DB.archetypes[document.getElementById('sel_arq').value].limit;
         randChecks('chk_arq', arqLimit); randChecks('chk_bg', 2); 
         randChecks('chk_talents', 3);
-        
-        // COLLAPSE ALL
-        this.showTalentSummary();
-        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
+        this.showTalentSummary(); ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
         this.calc();
     },
 
@@ -647,7 +640,6 @@ const app = {
         const resets = ['sel_desc', 'sel_arq', 'sel_bg', 'sel_armor', 'sel_weapon', 'sel_shield']; resets.forEach(id => document.getElementById(id).selectedIndex = 0);
         const checks = document.querySelectorAll('input[type="checkbox"], input[type="radio"]'); checks.forEach(c => c.checked = false);
         document.getElementById('char_img').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
-        
         this.autoResize('char_concept'); 
         ['talents', 'skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, true));
         this.updateOptions(true); this.calc();
@@ -677,11 +669,8 @@ const app = {
         this.updateOptions(true); 
         document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
         data.checks.forEach(item => { let el = document.getElementById(item.id); if (!el) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`); if (el) el.checked = true; });
-        
         this.autoResize('char_concept'); 
-        this.showTalentSummary();
-        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
-
+        this.showTalentSummary(); ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
         this.calc(); document.getElementById('char_manager').close();
     },
 
