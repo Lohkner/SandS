@@ -197,6 +197,7 @@
 <div class="container">
     <aside class="sidebar">
         <input type="file" id="img_input" accept="image/*" style="display:none" onchange="app.startCrop(this)">
+        <input type="file" id="json_load_input" accept=".json" style="display:none" onchange="app.loadJSON(this)">
         
         <div class="portrait-frame" onclick="document.getElementById('img_input').click()">
             <img id="char_img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E" alt="Retrato">
@@ -213,6 +214,10 @@
             <button class="btn btn-full" onclick="app.randomize()">🎲 Aleatorizar</button>
             <button class="btn" onclick="app.saveChar()">💾 Guardar</button>
             <button class="btn" onclick="app.openLoadMenu()">📂 Cargar</button>
+            
+            <button class="btn" onclick="app.exportJSON()">📤 Exportar JSON</button>
+            <button class="btn" onclick="app.triggerLoadJSON()">📥 Importar JSON</button>
+            
             <button class="btn btn-clear btn-full" onclick="app.clear()">🗑️ Limpiar Hoja</button>
         </div>
 
@@ -666,6 +671,62 @@ const app = {
         document.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(el => { saveData.checks.push({ name: el.name, value: el.value, id: el.id }); });
         roster[charName] = saveData; try { localStorage.setItem('sands_roster', JSON.stringify(roster)); alert(`Guardado: ${charName}`); } catch (e) { alert("¡Memoria llena! Usa imágenes más pequeñas."); }
     },
+
+    // --- NUEVAS FUNCIONES JSON ---
+    exportJSON: function() {
+        const charName = document.getElementById('char_name').value.trim() || "aventurero";
+        const saveData = { 
+            inputs: {}, selects: {}, checks: [], 
+            portrait: document.getElementById('char_img').src, 
+            concept: document.getElementById('char_concept').value 
+        };
+        document.querySelectorAll('input[type="text"], input[type="number"]').forEach(el => saveData.inputs[el.id] = el.value);
+        document.querySelectorAll('select').forEach(el => saveData.selects[el.id] = el.value);
+        document.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(el => { 
+            saveData.checks.push({ name: el.name, value: el.value, id: el.id }); 
+        });
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(saveData, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", charName.replace(/ /g, "_") + ".json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    },
+
+    triggerLoadJSON: function() {
+        document.getElementById('json_load_input').click();
+    },
+
+    loadJSON: function(input) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+                for (let id in data.inputs) { const el = document.getElementById(id); if (el) el.value = data.inputs[id]; }
+                for (let id in data.selects) { const el = document.getElementById(id); if (el) el.value = data.selects[id]; }
+                if (data.portrait) document.getElementById('char_img').src = data.portrait; 
+                if (data.concept) document.getElementById('char_concept').value = data.concept;
+                if (data.checks) {
+                    data.checks.forEach(item => { 
+                        let el = document.getElementById(item.id); 
+                        if (!el && item.name) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`); 
+                        if (el) el.checked = true; 
+                    });
+                }
+                app.updateOptions(true); app.autoResize('char_concept'); app.showTalentSummary(); 
+                ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => app.toggleSection(s, false));
+                app.calc();
+                alert("¡Personaje cargado desde archivo!");
+            } catch (err) { alert("Error al leer el archivo JSON."); console.error(err); }
+        };
+        reader.readAsText(file);
+        input.value = "";
+    },
+    // ----------------------------
 
     openLoadMenu: function() {
         const roster = JSON.parse(localStorage.getItem('sands_roster') || "{}"); const listDiv = document.getElementById('char_list'); listDiv.innerHTML = "";
