@@ -47,7 +47,6 @@
             background: #fffef8; padding: 0 10px; font-size: 1.2em; color: var(--ink-accent);
         }
 
-        /* === 3. BARRA LATERAL === */
         .sidebar { background: #fffef8; border: 2px solid var(--ink-main); padding: 15px; box-shadow: 5px 5px 0px rgba(0,0,0,0.1); position: sticky; top: 20px; height: fit-content; }
 
         /* === 4. FORMULARIOS === */
@@ -70,9 +69,26 @@
 
         /* === 5. UI ELEMENTS & GRIDS === */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+        
+        /* GRID UNIFICADO PARA INPUTS Y RESULTADOS DE STATS */
+        .stats-grid, .stats-output-grid { 
+            display: grid; 
+            grid-template-columns: repeat(6, 1fr); /* PC: 6 columnas */
+            gap: 10px; 
+        }
+        
+        /* CELDAS DEL RESULTADO */
+        .stat-box {
+            border: 1px solid #ccc;
+            background: #fdfdfd;
+            text-align: center;
+            padding: 5px;
+            font-family: var(--font-mono);
+            font-size: 0.95em;
+        }
+
         @media (max-width: 800px) {
-            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+            .stats-grid, .stats-output-grid { grid-template-columns: repeat(3, 1fr); } /* MÓVIL: 3 col x 2 filas */
             .container { grid-template-columns: 1fr; } 
             .sidebar { position: relative; top: 0; }
         }
@@ -119,7 +135,15 @@
         .summary-view { border: 1px solid var(--ink-accent); background: #fffdf5; padding: 12px; box-shadow: inset 0 0 8px rgba(0,0,0,0.05); margin-top: 10px; }
         .summary-text { font-family: var(--font-mono); font-size: 1em; text-align: center; color: var(--ink-main); font-weight: bold; }
         .bonus-desc { font-family: var(--font-body); font-style: italic; color: #666; font-size: 0.95em; margin-top: 5px; line-height: 1.2; }
-        #stats_final_display { font-family: var(--font-mono); background: var(--ink-main); color: #fff; padding: 10px; margin-top: 20px; font-size: 1em; border: 2px solid var(--ink-main); text-align: center; box-shadow: 3px 3px 0px rgba(0,0,0,0.2); }
+        
+        /* Stats Final Display en Edit Mode (también en Grid) */
+        #stats_final_display { 
+            background: var(--ink-main); color: #fff; padding: 10px; margin-top: 20px; 
+            border: 2px solid var(--ink-main); box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+        }
+        /* Celdas oscuras para el display negro */
+        .stat-box-dark { text-align: center; font-family: var(--font-mono); font-size: 1em; }
+
         #weapon_info { font-size: 1.2em; font-family: var(--font-mono); margin: 5px 0 0 0; color: var(--ink-main); font-weight: 700; }
 
         input[type="radio"], input[type="checkbox"] { appearance: none; width: 16px; height: 16px; border: 2px solid var(--ink-main); cursor: pointer; display: inline-block; vertical-align: middle; margin-right: 5px; }
@@ -133,19 +157,15 @@
         .modal-body { padding: 15px; max-height: 70vh; overflow-y: auto; }
         .char-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--ink-main); padding: 10px 0; }
 
-        /* === 9. EDITOR DE IMAGEN (MEJORADO) === */
+        /* === 9. EDITOR DE IMAGEN === */
         .crop-container {
             width: 240px; height: 330px; margin: 20px auto;
             border: 2px dashed var(--ink-accent);
             position: relative; overflow: hidden;
             background: #000; touch-action: none;
         }
-        .crop-image {
-            position: absolute; top: 0; left: 0; transform-origin: top left;
-            cursor: grab;
-        }
+        .crop-image { position: absolute; top: 0; left: 0; transform-origin: top left; cursor: grab; }
         .crop-image:active { cursor: grabbing; }
-        
         .crop-controls { text-align: center; margin-bottom: 15px; }
         .zoom-slider { width: 80%; accent-color: var(--ink-red); }
         .crop-help { font-size: 0.9em; color: #666; font-style: italic; text-align: center; margin-bottom: 10px; }
@@ -158,7 +178,6 @@
 <div class="container">
     <aside class="sidebar">
         <input type="file" id="img_input" accept="image/*" style="display:none" onchange="app.startCrop(this)">
-        
         <div class="portrait-frame" onclick="document.getElementById('img_input').click()">
             <img id="char_img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E" alt="Retrato">
             <span class="portrait-label">CAMBIAR RETRATO</span>
@@ -209,11 +228,12 @@
                     <div><label>SAB</label><input type="number" id="base_SAB" value="8" min="3" max="18" onchange="app.calc()"></div>
                     <div><label>CAR</label><input type="number" id="base_CAR" value="8" min="3" max="18" onchange="app.calc()"></div>
                 </div>
-                <div id="stats_final_display"></div>
+                <div id="stats_final_display" class="stats-output-grid"></div>
                 <button class="btn-confirm" onclick="app.toggleSection('stats', false)">✅ Confirmar Atributos</button>
             </div>
+            
             <div id="stats_summary_view" class="summary-view" style="display:none;">
-                <div id="stats_summary_text" class="summary-text" style="font-size:0.9em;"></div>
+                <div id="stats_summary_text" class="stats-output-grid"></div>
                 <button class="btn-edit" onclick="app.toggleSection('stats', true)">✏️ Modificar</button>
             </div>
         </div>
@@ -269,7 +289,7 @@
                 <button class="btn-confirm" onclick="app.toggleSection('saves', false)">✅ Confirmar Salvaciones</button>
             </div>
             <div id="saves_summary_view" class="summary-view" style="display:none;">
-                <div id="saves_summary_text" class="summary-text" style="font-size:0.9em; display:grid; grid-template-columns: repeat(3, 1fr); gap:5px;"></div>
+                <div id="saves_summary_text" class="stats-output-grid"></div>
                 <button class="btn-edit" onclick="app.toggleSection('saves', true)">✏️ Modificar</button>
             </div>
         </div>
@@ -364,22 +384,19 @@
     </div>
     <div class="modal-body" style="text-align:center;">
         <div class="crop-help">Arrastra para mover • Usa el control para Zoom</div>
-        
         <div class="crop-container" id="crop_container" onmousedown="app.startDrag(event)" ontouchstart="app.startDrag(event)">
             <img id="crop_preview" class="crop-image" draggable="false">
         </div>
-        
         <div class="crop-controls">
             <label>Zoom</label>
             <input type="range" id="crop_zoom" class="zoom-slider" step="0.05" oninput="app.updateCropView()">
         </div>
-        
         <button class="btn-confirm" onclick="app.applyCrop()">✅ Guardar Retrato</button>
     </div>
 </dialog>
 
 <script>
-// --- DB (Sin cambios) ---
+// --- DB (Idéntica) ---
 const DB = {
     descriptors: { "humano": { name: "Humano", bonus: "+1 a Dos", mods:{}, grant: [], txt: "Versátil, Ambición." }, "enano": { name: "Enano", bonus: "+2 CON, +1 FUE", mods:{CON:2, FUE:1}, grant: [], txt: "Robusto, Visión Oscuridad." }, "elfo": { name: "Elfo", bonus: "+2 DES, +1 SAB", mods:{DES:2, SAB:1}, grant: ["Proeza Física"], txt: "Inmune Encanto, Grado 1 Proeza Física." }, "medio_elfo": { name: "Medio Elfo", bonus: "+1 a Dos", mods:{}, grant: ["Perspicacia", "Influencia"], txt: "Visión Oscuridad, Empatía Experta." }, "infernal": { name: "Infernal", bonus: "+2 CAR, +1 INT", mods:{CAR:2, INT:1}, grant: [], txt: "Resistencia Fuego, Visión Oscuridad." }, "sintetico": { name: "Sintético", bonus: "+2 CON", mods:{CON:2}, grant: [], txt: "Inmune Veneno, No duerme." }, "aesir": { name: "Aesir", bonus: "+2 CAR, +1 SAB", mods:{CAR:2, SAB:1}, grant: [], txt: "Resistencia Radiante." }, "mutante": { name: "Mutante", bonus: "+2 Elige, +1 CON", mods:{CON:1}, grant: [], txt: "Inmune Tóxico, Rasgo Aberrante." }, "medio_orco": { name: "Medio Orco", bonus: "+2 FUE, +1 CON", mods:{FUE:2, CON:1}, grant: [], txt: "Implacable (1 PV al caer)." }, "draconido": { name: "Dracónido", bonus: "+2 FUE, +1 CAR", mods:{FUE:2, CAR:1}, grant: [], txt: "Resistencia Elemental, Presencia." }, "cambiante": { name: "Cambiante", bonus: "+2 FUE/DES, +1 CON", mods:{FUE:2, CON:1}, grant: ["Supervivencia"], txt: "Garras Naturales, Instinto." } },
     archetypes: { "valor": { name: "Audaz (Luchador)", pv: 8, adr: 6, ing: 2, ca: 1, limit: 2, skills: ["Proeza Física", "Intimidación", "Percepción", "Supervivencia"], edges: ["Físico", "Mental"], txt: "Competencia Total. Ignora requisitos. +1 CA." }, "gracia": { name: "Sutil (Experto)", pv: 6, adr: 4, ing: 4, ca: 0, limit: 2, skills: ["Sigilo", "Engaño", "Investigación", "Percepción", "Proeza Física", "Tecnología"], edges: ["Físico", "Mental", "Flexible"], txt: "Comp. Simple + Sutil. Ignora req en Sutiles." }, "espiritu": { name: "Sagaz (Adepto)", pv: 4, adr: 0, ing: 10, ca: 0, limit: 4, skills: ["Arcano", "Historia", "Medicina", "Naturaleza", "Perspicacia", "Investigación", "Religión"], edges: ["Mental", "Físico"], txt: "Comp. Simple solamente. Debe cumplir requisitos." } },
@@ -419,16 +436,14 @@ const app = {
                     const scaleH = containerH / app.cropState.img.naturalHeight;
                     const baseScale = Math.max(scaleW, scaleH);
 
-                    // Centrar imagen
                     app.cropState.zoom = baseScale;
                     app.cropState.x = (containerW - (app.cropState.img.naturalWidth * baseScale)) / 2;
                     app.cropState.y = (containerH - (app.cropState.img.naturalHeight * baseScale)) / 2;
 
-                    // Configurar slider dinámico
                     const slider = document.getElementById('crop_zoom');
-                    slider.min = baseScale * 0.5; // Permite reducir
-                    slider.max = baseScale * 3;   // Permite ampliar
-                    slider.step = (baseScale * 3 - baseScale * 0.5) / 100;
+                    slider.min = baseScale * 0.1; 
+                    slider.max = baseScale * 5;   
+                    slider.step = (baseScale * 5 - baseScale * 0.1) / 100;
                     slider.value = baseScale;
 
                     document.getElementById('crop_preview').src = app.cropState.img.src;
@@ -446,7 +461,6 @@ const app = {
         const zoom = document.getElementById('crop_zoom').value;
         app.cropState.zoom = parseFloat(zoom);
         const img = document.getElementById('crop_preview');
-        // Usamos translate3d para mejor rendimiento
         img.style.transform = `translate3d(${app.cropState.x}px, ${app.cropState.y}px, 0) scale(${app.cropState.zoom})`;
     },
 
@@ -475,24 +489,13 @@ const app = {
     applyCrop: function() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        
-        // Renderizado Alta Resolución (2x)
         const containerW = 240; const containerH = 330;
-        const targetW = containerW * 2; 
-        const targetH = containerH * 2;
+        const targetW = containerW * 2; const targetH = containerH * 2;
         canvas.width = targetW; canvas.height = targetH;
-
-        // Dibujar fondo negro
         ctx.fillStyle = "black"; ctx.fillRect(0,0,targetW, targetH);
-
-        // Aplicar transformaciones relativas al zoom y posición
-        // La lógica es: dibujar la imagen original escalada y movida
-        // Multiplicamos por 2 todo porque el canvas es el doble de grande que el contenedor
         ctx.translate(app.cropState.x * 2, app.cropState.y * 2);
         ctx.scale(app.cropState.zoom * 2, app.cropState.zoom * 2);
-        
         ctx.drawImage(app.cropState.img, 0, 0);
-
         document.getElementById('char_img').src = canvas.toDataURL('image/jpeg', 0.95);
         document.getElementById('crop_modal').close();
     },
@@ -534,9 +537,17 @@ const app = {
         const stats = { FUE: parseInt(document.getElementById('base_FUE').value)||8, DES: parseInt(document.getElementById('base_DES').value)||8, CON: parseInt(document.getElementById('base_CON').value)||8, INT: parseInt(document.getElementById('base_INT').value)||8, SAB: parseInt(document.getElementById('base_SAB').value)||8, CAR: parseInt(document.getElementById('base_CAR').value)||8 };
         const descData = DB.descriptors[document.getElementById('sel_desc').value]; for(let k in descData.mods) stats[k] += descData.mods[k];
         if(document.querySelector('input[data-id="atleta"]:checked')) stats.DES += 1;
+        
         let statHTML = "", summaryHTML = "";
-        for(let k in stats) { let mod = this.getMod(stats[k]); let display = `${k}: <b>${stats[k]}</b> (${mod>=0?'+':''}${mod})`; statHTML += `<span style="margin:0 10px">${display}</span>`; summaryHTML += `<span style="margin:0 8px; display:inline-block;">${display}</span>`; }
-        document.getElementById('stats_final_display').innerHTML = statHTML; document.getElementById('stats_summary_text').innerHTML = summaryHTML;
+        for(let k in stats) { 
+            let mod = this.getMod(stats[k]); 
+            let display = `${k}: <b>${stats[k]}</b> (${mod>=0?'+':''}${mod})`; 
+            let itemHtml = `<div class="stat-box-dark">${display}</div>`;
+            statHTML += `<div class="stat-box-dark">${display}</div>`; 
+            summaryHTML += `<div class="stat-box">${display}</div>`; 
+        }
+        document.getElementById('stats_final_display').innerHTML = statHTML; 
+        document.getElementById('stats_summary_text').innerHTML = summaryHTML;
 
         // Saves
         const profBonus = 2; const selCommon = document.querySelector('input[name="save_common"]:checked')?.value; const selUncommon = document.querySelector('input[name="save_uncommon"]:checked')?.value;
@@ -545,10 +556,10 @@ const app = {
             let baseMod = this.getMod(stats[stat]); let isProf = (stat === selCommon || stat === selUncommon); let total = baseMod + (isProf ? profBonus : 0); let style = isProf ? "color:var(--ink-red); text-decoration:underline;" : "color:var(--ink-main);";
             savesHTML += `<div style="${style}"><div style="font-size:0.7em;">${stat}</div>${total>=0?'+':''}${total}</div>`;
             let summaryStyle = isProf ? "font-weight:bold; color:var(--ink-red);" : "";
-            savesSummary += `<div style="${summaryStyle}">${stat}: ${total>=0?'+':''}${total}</div>`;
+            savesSummary += `<div class="stat-box" style="${summaryStyle}">${stat}: ${total>=0?'+':''}${total}</div>`;
         });
         document.getElementById('saves_display').innerHTML = savesHTML;
-        document.getElementById('saves_summary_text').innerHTML = savesSummary || "Ninguna seleccionada";
+        document.getElementById('saves_summary_text').innerHTML = savesSummary;
 
         // Skills
         const skillCounts = {}; descData.grant.forEach(s => skillCounts[s] = (skillCounts[s]||0) + 1);
@@ -608,9 +619,7 @@ const app = {
         const arqLimit = DB.archetypes[document.getElementById('sel_arq').value].limit;
         randChecks('chk_arq', arqLimit); randChecks('chk_bg', 2); 
         randChecks('chk_talents', 3);
-        
-        this.showTalentSummary();
-        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
+        this.showTalentSummary(); ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
         this.calc();
     },
 
@@ -620,7 +629,6 @@ const app = {
         const resets = ['sel_desc', 'sel_arq', 'sel_bg', 'sel_armor', 'sel_weapon', 'sel_shield']; resets.forEach(id => document.getElementById(id).selectedIndex = 0);
         const checks = document.querySelectorAll('input[type="checkbox"], input[type="radio"]'); checks.forEach(c => c.checked = false);
         document.getElementById('char_img').src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234a3b2a'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
-        
         this.autoResize('char_concept'); 
         ['talents', 'skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, true));
         this.updateOptions(true); this.calc();
@@ -650,11 +658,8 @@ const app = {
         this.updateOptions(true); 
         document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
         data.checks.forEach(item => { let el = document.getElementById(item.id); if (!el) el = document.querySelector(`input[name="${item.name}"][value="${item.value}"]`); if (el) el.checked = true; });
-        
         this.autoResize('char_concept'); 
-        this.showTalentSummary();
-        ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
-
+        this.showTalentSummary(); ['skills', 'stats', 'identity', 'saves', 'combat'].forEach(s => this.toggleSection(s, false));
         this.calc(); document.getElementById('char_manager').close();
     },
 
