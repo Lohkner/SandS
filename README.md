@@ -3,13 +3,13 @@
 
 **Generador y Hoja de Personaje Digital para el sistema de rol Stars & Sorcery.**
 
-> *Una herramienta de estilo "Old School" (OSR) diseñada para gestionar la identidad, estadísticas y equipo de tus aventureros de forma automática, sin perder la sensación de papel y lápiz.*
+> *Una herramienta de estilo Moderno y "Old School" (OSR) diseñada para gestionar la identidad, estadísticas y equipo de tus aventureros, sin perder la sensación de papel y lápiz.*
 
 ## 📜 Descripción del Proyecto
 
-**S&S: Crónicas Antiguas** es una aplicación web progresiva (PWA) de una sola página (SPA) construida con HTML5, CSS3 y JavaScript puro (Vanilla JS).
+**S&S: Companion** es una aplicación web progresiva (PWA) de una sola página (SPA) construida con HTML5, CSS3 y JavaScript puro (Vanilla JS).
 
-Su objetivo es simplificar la creación de personajes para *Stars & Sorcery (v4.5)*, automatizando todos los cálculos matemáticos (modificadores, carga, CA, reservas) mientras se mantiene una estética inmersiva de "grimorio antiguo".
+Su objetivo es simplificar la creación de personajes para *Stars & Sorcery (v4.7)*, automatizando todos los cálculos matemáticos (modificadores, carga, CA, reservas) mientras se mantiene una estética inmersiva de "grimorio antiguo".
 
 ## ✨ Características Principales
 
@@ -18,7 +18,7 @@ Su objetivo es simplificar la creación de personajes para *Stars & Sorcery (v4.
 * **🎲 Generador de NPCs/PJs:** Botón de "Aleatorizar" que crea un personaje legal y completo (incluyendo talentos y equipo) en un solo clic.
 * **💾 Persistencia de Datos:** Sistema de Guardado y Carga local (`localStorage`) para mantener tus personajes seguros en tu dispositivo sin necesidad de bases de datos externas.
 * **📱 PWA & Offline First:** Diseñada para instalarse como una App nativa en Android/iOS y funcionar perfectamente sin conexión a internet.
-* **🎨 Estética OSR:** Interfaz gráfica personalizada con paleta de colores de pergamino y tinta, tipografías clásicas y diseño responsive.
+* **🎨 Estética única:** Interfaz gráfica personalizada con diseño responsive.
 
 ## 🚀 Cómo Usar
 
